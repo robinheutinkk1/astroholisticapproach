@@ -102,6 +102,13 @@ export function SiteHeader() {
               </li>
             );
           })}
+          {/* The cart button in the bar sits behind this panel while it is
+              open, so the menu carries its own way through. */}
+          <li className="nav-cta-mobile">
+            <Link href="/cart" className="nav-link">
+              Cart{cartCount > 0 ? ` (${cartCount})` : ""}
+            </Link>
+          </li>
           <li className="nav-cta-mobile">
             <Link href="/contact" className="nav-cta">
               Book a session
