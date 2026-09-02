@@ -41,7 +41,9 @@ export function SiteHeader() {
     setOpenItem(null);
   }, [pathname]);
 
+  // Rendered as 0 until hydration, so the server and client markup match.
   const cartCount = ready ? itemCount : 0;
+  const cartLabel = cartCount > 0 ? `Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}` : "Cart, empty";
 
   return (
     <nav className={`nav${scrolled ? " scrolled" : ""}`} id="nav">
@@ -107,12 +109,20 @@ export function SiteHeader() {
           </li>
         </ul>
 
+        {/* Outside .nav-right, which the stylesheet hides below 1400px — the
+            cart has to stay reachable at every width, and reachable while it
+            is still empty. */}
+        <Link href="/cart" className="nav-cart" aria-label={cartLabel}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M4 5h2l1.6 9.2a2 2 0 002 1.8h6.9a2 2 0 002-1.6L20 8H7" />
+            <circle cx="10" cy="19.5" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="17" cy="19.5" r="1.2" fill="currentColor" stroke="none" />
+          </svg>
+          <span className="nav-cart-label">Cart</span>
+          {cartCount > 0 && <span className="count">{cartCount}</span>}
+        </Link>
+
         <div className="nav-right">
-          {cartCount > 0 && (
-            <Link href="/cart" className="nav-link" aria-label={`Cart, ${cartCount} items`}>
-              Cart ({cartCount})
-            </Link>
-          )}
           <Link href="/contact" className="nav-cta">
             Book a session
           </Link>
