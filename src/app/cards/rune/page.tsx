@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { cardPriceRows } from "@/content/readings";
 
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
     "Rune Cards for guidance, insight and a fresh perspective on the challenges and opportunities you may encounter.",
 };
 
-export default function RunePage() {
+export default async function RunePage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -47,7 +50,7 @@ export default function RunePage() {
               "Advice on the question or situation you bring",
             ]}
           >
-            <PriceLines rows={cardPriceRows} />
+            <PriceLines rows={cardPriceRows(t)} />
           </InfoBox>
         </div>
 

@@ -1,17 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminUser } from "@/lib/auth";
 import { signOut } from "@/app/admin/actions";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export const dynamic = "force-dynamic";
-
-const adminNav = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/posts", label: "Blog" },
-  { href: "/admin/products", label: "Shop" },
-  { href: "/admin/orders", label: "Orders" },
-  { href: "/admin/messages", label: "Messages" },
-];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await getAdminUser();
@@ -31,15 +23,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </form>
       </div>
 
-      <nav className="admin-nav">
-        {adminNav.map((item) => (
-          <Link href={item.href} key={item.href}>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      <div style={{ marginTop: 40 }}>{children}</div>
+      <div className="admin-layout">
+        <AdminSidebar />
+        <div className="admin-main">{children}</div>
+      </div>
     </div>
   );
 }

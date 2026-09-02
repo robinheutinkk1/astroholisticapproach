@@ -4,14 +4,16 @@ import { Suspense } from "react";
 import { InfoBox, PageHeader, Section, SectionHead } from "@/components/Layout";
 import { ContactForm } from "@/components/ContactForm";
 import { Faq } from "@/components/Faq";
-import { site } from "@/lib/site";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Send a message to Milan Landkroon. Replies within 24 hours on weekdays.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSettings();
+
   return (
     <>
       <PageHeader
@@ -31,8 +33,8 @@ export default function ContactPage() {
             </p>
             <InfoBox title="E-mail" style={{ marginBottom: 14 }}>
               <p style={{ fontSize: "1rem" }}>
-                <a href={`mailto:${site.email}`} style={{ color: "var(--c-gold)" }}>
-                  {site.email}
+                <a href={`mailto:${settings.contact.email}`} style={{ color: "var(--c-gold)" }}>
+                  {settings.contact.email}
                 </a>
               </p>
             </InfoBox>
@@ -58,7 +60,7 @@ export default function ContactPage() {
 
       <Section>
         <SectionHead eyebrow="FAQ" plain title='Common <span class="accent">questions</span>' />
-        <Faq />
+        <Faq items={settings.faq} />
       </Section>
     </>
   );

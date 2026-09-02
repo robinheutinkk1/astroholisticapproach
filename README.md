@@ -42,9 +42,11 @@ Verder: `npm run build`, `npm run typecheck`.
    npx supabase db push
    ```
 
-3. Draai `supabase/seed.sql`. Die zet de negen producten van de site klaar en
+3. Draai daarna `supabase/migrations/0002_media_bucket.sql` en
+   `supabase/migrations/0003_site_settings.sql`.
+4. Draai `supabase/seed.sql`. Die zet de negen producten van de site klaar en
    de zes blogtitels als **concept** (zie "Nog te doen").
-4. Kopieer uit **Project settings › API**:
+5. Kopieer uit **Project settings › API**:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY` — **alleen server-side**, nooit in de browser.
@@ -58,8 +60,23 @@ wachtwoord, "Auto Confirm User" aanvinken) en zet daarna de rol:
 update public.profiles set role = 'admin' where email = 'landkroonmilan@gmail.com';
 ```
 
-Inloggen op `/login`, daarna is `/admin` bereikbaar: blogartikelen,
-producten, bestellingen en binnengekomen berichten.
+Inloggen op `/login`, daarna is `/admin` bereikbaar. Via het menu links:
+
+| Sectie | Wat Milan daar kan |
+| --- | --- |
+| **Blog** | Artikelen schrijven, foto uploaden, publiceren |
+| **Shop** | Producten, prijzen, voorraad, foto's |
+| **Tariffs** | Alle 29 bedragen die op de site staan |
+| **FAQ** | Vragen onder het contactformulier, toevoegen en volgorde |
+| **Sessions** | De drie blokken op de sessiepagina, elk aan of uit |
+| **Orders / Messages** | Bestellingen en binnengekomen berichten |
+| **Details & socials** | E-mail, social media, KvK, IBAN, footertekst, deelafbeelding |
+
+Elke instelling wordt bij het opslaan gevalideerd; wat niet klopt wordt
+geweigerd met een melding in plaats van opgeslagen. Elke sectie heeft een
+knop **Restore the original values**: die verwijdert de opgeslagen versie,
+waarna de site terugvalt op de waarden die in de code staan. Een lege
+`site_settings`-tabel geeft dus exact de site zoals hij is opgeleverd.
 
 ### Beveiliging
 
@@ -161,14 +178,17 @@ src/
   content/                 teksten, tarieven, FAQ, sessies
   lib/                     Supabase-clients, queries, helpers
 supabase/
-  migrations/0001_init.sql schema en RLS-policies
-  seed.sql                 de negen producten + zes blogtitels als concept
+  migrations/0001_init.sql     schema en RLS-policies
+  migrations/0002_media_bucket.sql  opslag voor geüploade afbeeldingen
+  migrations/0003_site_settings.sql instellingen die via /admin te wijzigen zijn
+  seed.sql                     de negen producten + zes blogtitels als concept
 public/                    de zodiakcirkel en de portretfoto
 ```
 
-Tarieven staan op één plek: `src/content/pricing.ts`. Je past een bedrag daar
-aan en het verandert op elke pagina waar het voorkomt, net als in de oude
-`settings`-blok van de HighLevel-pagina.
+De bestanden in `src/content/` zijn nu de **standaardwaarden**. Wat Milan in
+`/admin` opslaat gaat naar de database en heeft voorrang; staat daar niets,
+dan toont de site wat in die bestanden staat. Zo kan een verkeerde invoer de
+site nooit leegmaken.
 
 ---
 

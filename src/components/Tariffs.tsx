@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { prices } from "@/content/pricing";
 import { Btn, Section, SectionHead } from "@/components/Layout";
+import { getSettings, type Settings } from "@/lib/settings";
+
+type Tariffs = Settings["tariffs"];
 
 type Row = { label: string; sub?: string; price: string; unit?: string };
 
@@ -20,35 +22,37 @@ function TariffRow({ row }: { row: Row }) {
   );
 }
 
-const consultations: Row[] = [
-  { label: "Natal chart reading", sub: "Includes 2 hours analysis chart + 1-hour Zoom session", price: prices.astrology.reading },
-  { label: "Astrology charts, Western or Vedic", sub: "Includes 2 hours analysis chart + 1-hour Zoom session", price: prices.astrology.reading },
+const consultations = (t: Tariffs): Row[] => [
+  { label: "Natal chart reading", sub: "Includes 2 hours analysis chart + 1-hour Zoom session", price: t.astrology.reading },
+  { label: "Astrology charts, Western or Vedic", sub: "Includes 2 hours analysis chart + 1-hour Zoom session", price: t.astrology.reading },
   {
     label: "Love and relation charts",
     sub: "Includes 2 analysis charts, a third combined chart + 1-hour Zoom session",
-    price: prices.astrology.loveFirstHour,
+    price: t.astrology.loveFirstHour,
   },
-  { label: "Additional hour on any reading", sub: "After the first hour", price: prices.astrology.extraHour },
+  { label: "Additional hour on any reading", sub: "After the first hour", price: t.astrology.extraHour },
 ];
 
-const cardReadings: Row[] = [
-  { label: "Full cards explanation", sub: "One-hour Zoom session, most chosen", price: prices.cards.firstHour, unit: "per hour" },
-  { label: "Additional hour on a card reading", sub: "After the first hour", price: prices.cards.extraHour },
-  { label: "One specific question", sub: "30-minute Zoom session", price: prices.cards.specificQuestion },
-  { label: "One card interpretation", sub: "15-minute Zoom session", price: prices.cards.singleCard },
+const cardReadings = (t: Tariffs): Row[] => [
+  { label: "Full cards explanation", sub: "One-hour Zoom session, most chosen", price: t.cards.firstHour, unit: "per hour" },
+  { label: "Additional hour on a card reading", sub: "After the first hour", price: t.cards.extraHour },
+  { label: "One specific question", sub: "30-minute Zoom session", price: t.cards.specificQuestion },
+  { label: "One card interpretation", sub: "15-minute Zoom session", price: t.cards.singleCard },
 ];
 
-const packages: Row[] = [
+const packages = (t: Tariffs): Row[] => [
   { label: "3 or more sessions", sub: "Receive a discounted package rate", price: "On request" },
-  { label: "Family package", sub: "Groups of 4 or more", price: prices.packages.family, unit: "per person" },
+  { label: "Family package", sub: "Groups of 4 or more", price: t.packages.family, unit: "per person" },
   {
     label: "Monthly guidance",
     sub: "One personalized card and interpretation each week, for one month",
-    price: prices.packages.monthly,
+    price: t.packages.monthly,
   },
 ];
 
-export function TariffSection() {
+export async function TariffSection() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <Section id="tariff-block">
       <SectionHead
@@ -60,32 +64,32 @@ export function TariffSection() {
           <h3>Consultations &amp; Readings</h3>
           <p className="tariff-intro">Choose the Zoom session that best suits your needs.</p>
           <div className="tariff-list">
-            {consultations.map((row) => (
+            {consultations(t).map((row) => (
               <TariffRow key={row.label + row.price} row={row} />
             ))}
           </div>
           <p className="tariff-remark">
             Depending on complexity and your questions, expect approximately 2 to 3 hours to complete a reading. An
-            additional written version by e-mail is possible: {prices.astrology.writtenVersion}.
+            additional written version by e-mail is possible: {t.astrology.writtenVersion}.
           </p>
         </div>
 
         <div className="tariff-group">
           <h3>Card Readings</h3>
           <div className="tariff-list">
-            {cardReadings.map((row) => (
+            {cardReadings(t).map((row) => (
               <TariffRow key={row.label + row.price} row={row} />
             ))}
           </div>
           <p className="tariff-remark">
-            An additional written version by e-mail is possible: {prices.cards.writtenVersion}.
+            An additional written version by e-mail is possible: {t.cards.writtenVersion}.
           </p>
         </div>
 
         <div className="tariff-group">
           <h3>Reading Packages</h3>
           <div className="tariff-list">
-            {packages.map((row) => (
+            {packages(t).map((row) => (
               <TariffRow key={row.label + row.price} row={row} />
             ))}
           </div>
@@ -100,7 +104,9 @@ export function TariffSection() {
   );
 }
 
-export function CourseTariffSection() {
+export async function CourseTariffSection() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <Section>
       <SectionHead
@@ -121,7 +127,7 @@ export function CourseTariffSection() {
             </p>
             <div className="fee-row">
               <span className="fee-label">Program fee</span>
-              <span className="fee-amount">{prices.courses.oneYear}</span>
+              <span className="fee-amount">{t.courses.oneYear}</span>
             </div>
             <p>
               After successfully completing the first year and passing all examinations, you receive a{" "}

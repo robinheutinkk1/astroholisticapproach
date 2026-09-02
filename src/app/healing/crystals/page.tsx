@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { Btn, CenteredCtas, CtaBlock, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Crystals & Stones Advice",
   description: "Advice to identify which crystals and stones match you, and how to use them.",
 };
 
-export default function CrystalsPage() {
+export default async function CrystalsPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -35,9 +37,9 @@ export default function CrystalsPage() {
           >
             <PriceLines
               rows={[
-                { label: "Advice on one specific crystal or stone", sub: "30-minute Zoom session", price: prices.crystals.single },
-                { label: "Advice on crystals &amp; stones", sub: "60-minute Zoom session", price: prices.crystals.hour },
-                { label: "Additional hour", sub: "After the first hour", price: prices.crystals.extraHour },
+                { label: "Advice on one specific crystal or stone", sub: "30-minute Zoom session", price: t.crystals.single },
+                { label: "Advice on crystals &amp; stones", sub: "60-minute Zoom session", price: t.crystals.hour },
+                { label: "Additional hour", sub: "After the first hour", price: t.crystals.extraHour },
               ]}
             />
           </InfoBox>

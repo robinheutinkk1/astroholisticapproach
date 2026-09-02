@@ -5,25 +5,33 @@ import { CartProvider } from "@/components/CartProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { site } from "@/lib/site";
+import { getSettings } from "@/lib/settings";
 import { Analytics } from "@vercel/analytics/next";
 import { env } from "@/lib/env";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.siteUrl),
-  title: {
-    default: `${site.name} — Astrology, Cards, Positive Psychology & Ayurveda`,
-    template: `%s | ${site.name}`,
-  },
-  description: site.description,
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    title: site.name,
-    description: site.description,
-    url: env.siteUrl,
-  },
-  twitter: { card: "summary_large_image" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+
+  return {
+    metadataBase: new URL(env.siteUrl),
+    title: {
+      default: `${site.name} — Astrology, Cards, Positive Psychology & Ayurveda`,
+      template: `%s | ${site.name}`,
+    },
+    description: settings.brand.description,
+    openGraph: {
+      type: "website",
+      siteName: site.name,
+      title: site.name,
+      description: settings.brand.description,
+      url: env.siteUrl,
+      // Relative paths resolve against metadataBase, so a shared link shows a
+      // picture instead of a bare headline.
+      images: [{ url: settings.seo.shareImage, width: 1200, height: 630 }],
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 const structuredData = {
   "@context": "https://schema.org",

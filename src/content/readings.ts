@@ -1,25 +1,28 @@
-import { prices } from "@/content/pricing";
 import type { PriceRow } from "@/components/Layout";
+import type { Settings } from "@/lib/settings";
 
-const astrologyPriceRows: PriceRow[] = [
-  { label: "Additional hour on any reading", sub: "After the first hour", price: prices.astrology.extraHour },
-  { label: "Written version by e-mail", sub: "Optional", price: prices.astrology.writtenVersion },
+type Tariffs = Settings["tariffs"];
+
+const astrologyPriceRows = (t: Tariffs): PriceRow[] => [
+  { label: "Additional hour on any reading", sub: "After the first hour", price: t.astrology.extraHour },
+  { label: "Written version by e-mail", sub: "Optional", price: t.astrology.writtenVersion },
 ];
 
-export const cardPriceRows: PriceRow[] = [
-  { label: "Full cards explanation", sub: "One-hour Zoom session, most chosen", price: prices.cards.firstHour, unit: "per hour" },
-  { label: "Additional hour on a card reading", sub: "After the first hour", price: prices.cards.extraHour },
-  { label: "One specific question", sub: "30-minute Zoom session", price: prices.cards.specificQuestion },
-  { label: "One card interpretation", sub: "15-minute Zoom session", price: prices.cards.singleCard },
+export const cardPriceRows = (t: Tariffs): PriceRow[] => [
+  { label: "Full cards explanation", sub: "One-hour Zoom session, most chosen", price: t.cards.firstHour, unit: "per hour" },
+  { label: "Additional hour on a card reading", sub: "After the first hour", price: t.cards.extraHour },
+  { label: "One specific question", sub: "30-minute Zoom session", price: t.cards.specificQuestion },
+  { label: "One card interpretation", sub: "15-minute Zoom session", price: t.cards.singleCard },
 ];
 
-export const therapyPriceRows: PriceRow[] = [
-  { label: "Intake interview and treatment plan", sub: "Approximately 60 minutes", price: prices.therapy.intake },
-  { label: "Therapy Zoom session", sub: "30 minutes", price: prices.therapy.session30 },
-  { label: "Therapy Zoom session", sub: "60 minutes", price: prices.therapy.session60 },
+export const therapyPriceRows = (t: Tariffs): PriceRow[] => [
+  { label: "Intake interview and treatment plan", sub: "Approximately 60 minutes", price: t.therapy.intake },
+  { label: "Therapy Zoom session", sub: "30 minutes", price: t.therapy.session30 },
+  { label: "Therapy Zoom session", sub: "60 minutes", price: t.therapy.session60 },
 ];
 
-export const readings = {
+/** Built per request so a tariff changed in the CMS shows up everywhere. */
+export const buildReadings = (t: Tariffs) => ({
   western: {
     trail: [{ label: "Astrology", href: "/astrology" }, { label: "Western" }],
     eyebrow: "Western Astrology",
@@ -42,9 +45,9 @@ export const readings = {
       {
         label: "Western astrology chart",
         sub: "Includes 2 hours analysis chart + 1-hour Zoom session",
-        price: prices.astrology.reading,
+        price: t.astrology.reading,
       },
-      ...astrologyPriceRows,
+      ...astrologyPriceRows(t),
     ],
     interest: "western",
   },
@@ -72,9 +75,9 @@ export const readings = {
       {
         label: "Vedic astrology chart",
         sub: "Includes 2 hours analysis chart + 1-hour Zoom session",
-        price: prices.astrology.reading,
+        price: t.astrology.reading,
       },
-      ...astrologyPriceRows,
+      ...astrologyPriceRows(t),
     ],
     interest: "vedic",
   },
@@ -103,9 +106,9 @@ export const readings = {
       {
         label: "Natal chart reading",
         sub: "Includes 2 hours analysis chart + 1-hour Zoom session",
-        price: prices.astrology.reading,
+        price: t.astrology.reading,
       },
-      ...astrologyPriceRows,
+      ...astrologyPriceRows(t),
     ],
     interest: "natal",
   },
@@ -133,10 +136,10 @@ export const readings = {
       {
         label: "Love and relation charts",
         sub: "Includes 2 analysis charts, a third combined chart + 1-hour Zoom session",
-        price: prices.astrology.loveFirstHour,
+        price: t.astrology.loveFirstHour,
       },
-      ...astrologyPriceRows,
+      ...astrologyPriceRows(t),
     ],
     interest: "love",
   },
-};
+});

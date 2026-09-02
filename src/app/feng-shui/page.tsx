@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { Btn } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 import { scarcityLabel } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -11,7 +11,9 @@ export const metadata: Metadata = {
     "A personal Feng Shui home consult: map the energy zones of your home and find out what you can change.",
 };
 
-export default function FengShuiPage() {
+export default async function FengShuiPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -50,8 +52,8 @@ export default function FengShuiPage() {
           >
             <PriceLines
               rows={[
-                { label: "Start tariff", sub: "Your home, first floor included", price: prices.fengShui.start },
-                { label: "Each additional floor", sub: "Added to the start tariff", price: prices.fengShui.extraFloor },
+                { label: "Start tariff", sub: "Your home, first floor included", price: t.fengShui.start },
+                { label: "Each additional floor", sub: "Added to the start tariff", price: t.fengShui.extraFloor },
               ]}
             />
             <p className="side-note">
@@ -90,9 +92,9 @@ export default function FengShuiPage() {
             {scarcityLabel("service")}
           </span>
           <h2>
-            From {prices.fengShui.start}{" "}
+            From {t.fengShui.start}{" "}
             <span style={{ fontSize: "0.5em", color: "var(--c-mute)", fontStyle: "normal" }}>
-              · each additional floor {prices.fengShui.extraFloor}
+              · each additional floor {t.fengShui.extraFloor}
             </span>
           </h2>
           <p>

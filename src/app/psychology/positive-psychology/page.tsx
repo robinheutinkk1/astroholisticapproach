@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { TreatmentSteps } from "@/components/TreatmentSteps";
 import { therapyPriceRows } from "@/content/readings";
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
     "Carl Jung Therapy and Dolores Cannon Therapy (QHHT), individual and personalised, with an intake interview and a treatment plan.",
 };
 
-export default function PositivePsychologyPage() {
+export default async function PositivePsychologyPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -48,7 +51,7 @@ export default function PositivePsychologyPage() {
               "Therapy sessions, personalised and one-on-one",
             ]}
           >
-            <PriceLines rows={therapyPriceRows} />
+            <PriceLines rows={therapyPriceRows(t)} />
           </InfoBox>
         </div>
 

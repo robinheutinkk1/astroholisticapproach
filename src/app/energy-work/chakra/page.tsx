@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { RequestBlock } from "@/components/PageTemplates";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Chakra Meditation",
   description: "A live guided 120-minute chakra meditation on Zoom, one-on-one or as a small group.",
 };
 
-export default function ChakraPage() {
+export default async function ChakraPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -45,12 +47,12 @@ export default function ChakraPage() {
             items={["A guided chakra meditation treatment by Zoom", "Can be booked one-on-one or as a small group"]}
           >
             <PriceLines
-              rows={[{ label: "Chakra meditation treatment", sub: "120-minute Zoom session", price: prices.chakra.session }]}
+              rows={[{ label: "Chakra meditation treatment", sub: "120-minute Zoom session", price: t.chakra.session }]}
             />
           </InfoBox>
         </div>
       </Section>
-      <RequestBlock price={prices.chakra.session} priceNote="120 min · Zoom" interest="chakra" />
+      <RequestBlock price={t.chakra.session} priceNote="120 min · Zoom" interest="chakra" />
     </>
   );
 }

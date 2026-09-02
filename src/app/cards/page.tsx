@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { Btn, CenteredCtas, CtaBlock, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { CardGrid } from "@/components/PageTemplates";
-import { prices } from "@/content/pricing";
 import { cardPriceRows } from "@/content/readings";
 
 export const metadata: Metadata = {
@@ -34,7 +34,9 @@ const decks = [
   },
 ];
 
-export default function CardsPage() {
+export default async function CardsPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -69,8 +71,8 @@ export default function CardsPage() {
         >
           <PriceLines
             rows={[
-              ...cardPriceRows,
-              { label: "Written version by e-mail", sub: "Optional", price: prices.cards.writtenVersion },
+              ...cardPriceRows(t),
+              { label: "Written version by e-mail", sub: "Optional", price: t.cards.writtenVersion },
             ]}
           />
           <p className="side-note">

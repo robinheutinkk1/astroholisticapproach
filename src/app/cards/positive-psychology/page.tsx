@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Positive Psychology Cards",
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     "Practical, evidence-based cards to promote emotional well-being, reduce stress and strengthen resilience.",
 };
 
-export default function PositivePsychologyCardsPage() {
+export default async function PositivePsychologyCardsPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -50,8 +52,8 @@ export default function PositivePsychologyCardsPage() {
             </ul>
             <PriceLines
               rows={[
-                { label: "Introduction session", sub: "60-minute Zoom session", price: prices.psychologyCards.intro },
-                { label: "Follow-up session", sub: "Each following Zoom session", price: prices.psychologyCards.followUp },
+                { label: "Introduction session", sub: "60-minute Zoom session", price: t.psychologyCards.intro },
+                { label: "Follow-up session", sub: "Each following Zoom session", price: t.psychologyCards.followUp },
               ]}
             />
           </InfoBox>
