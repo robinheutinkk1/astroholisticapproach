@@ -1289,3 +1289,38 @@ footer {
 }
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
+
+/* ---- Cards carrying a single link are clickable as a whole ---- */
+/* Same treatment as the blog cards: the one call to action is stretched over
+   the card, so the hover lift is not a promise the card fails to keep. Only
+   applied where a card has exactly one link — a card with two (the shop, and
+   "Where to start" on the home page) keeps separate targets. */
+.card.is-linked,
+.session-card.is-linked { cursor: pointer; }
+
+/* .btn positions itself for its inner content; setting the stretched call to
+   action back to static makes the overlay measure against the card. */
+.card.is-linked .card-cta,
+.session-card.is-linked > .btn { position: static; }
+
+.card.is-linked .card-cta::after,
+.session-card.is-linked > .btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.card.is-linked:focus-within,
+.session-card.is-linked:focus-within {
+  border-color: rgba(212, 175, 55, 0.42);
+  box-shadow: var(--shadow-soft);
+}
+
+/* A card with nothing to click should not lift or invite one either. */
+.card.is-static { cursor: default; }
+.card.is-static:hover {
+  transform: none;
+  border-color: var(--c-line);
+  box-shadow: var(--shadow-card);
+}

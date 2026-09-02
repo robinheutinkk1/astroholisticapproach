@@ -46,7 +46,7 @@ export default function WebinarsPage() {
         <div className="sessions-grid">
           {sessions.map((session) => (
             <article
-              className={`session-card reveal${session.key === "oneOnOne" ? " featured" : ""}`}
+              className={`session-card reveal is-linked${session.key === "oneOnOne" ? " featured" : ""}`}
               key={session.key}
             >
               <div className="session-icon" aria-hidden="true">
