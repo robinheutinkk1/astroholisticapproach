@@ -51,7 +51,7 @@ export function MethodSection() {
       />
       <div className="grid-4">
         {pillars.map((pillar) => (
-          <article className="card reveal" key={pillar.num}>
+          <article className="card reveal is-linked" key={pillar.num}>
             <div className="method-num">{pillar.num}</div>
             <h3>{pillar.title}</h3>
             <Rich as="div" className="card-sub" html={pillar.sub} />

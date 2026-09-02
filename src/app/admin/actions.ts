@@ -250,3 +250,58 @@ export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+// ---------------------------------------------------------------------------
+// Image uploads
+// ---------------------------------------------------------------------------
+
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+
+const EXTENSIONS: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif",
+  "image/gif": "gif",
+};
+
+export type UploadResult = { url: string } | { error: string };
+
+/**
+ * Takes a picked file and returns the public URL to store on the record, so
+ * nobody has to open the Supabase dashboard to add an image. Runs with the
+ * service role, which is why it checks for an admin first.
+ */
+export async function uploadImage(formData: FormData): Promise<UploadResult> {
+  const admin = await getAdminUser();
+  if (!admin) return { error: "You are not signed in." };
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "No file was selected." };
+  }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return { error: "Please choose a JPG, PNG, WEBP, AVIF or GIF image." };
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return { error: "That image is larger than 8 MB. Please use a smaller one." };
+  }
+
+  const folder = String(formData.get("folder") ?? "uploads").replace(/[^a-z0-9-]/gi, "") || "uploads";
+  const path = `${folder}/${crypto.randomUUID()}.${EXTENSIONS[file.type]}`;
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.storage.from("media").upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  });
+
+  if (error) {
+    console.error("[upload] failed", error.message);
+    return { error: "Uploading failed. Please try again." };
+  }
+
+  const { data } = supabase.storage.from("media").getPublicUrl(path);
+  return { url: data.publicUrl };
+}

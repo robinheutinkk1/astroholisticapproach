@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Btn, PageHeader, Section } from "@/components/Layout";
-import { getPostBySlug, getPublishedPosts } from "@/lib/queries";
+import { Btn, PageHeader, Section, SectionHead } from "@/components/Layout";
+import { getPostBySlug, getPublishedPosts, getRelatedPosts } from "@/lib/queries";
+import { BlogCard } from "@/components/BlogCard";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatDate } from "@/lib/format";
 
@@ -36,6 +37,8 @@ export default async function PostPage({ params }: Params) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
+
+  const related = await getRelatedPosts(post.slug, post.category);
 
   return (
     <>
@@ -74,6 +77,17 @@ export default async function PostPage({ params }: Params) {
           </div>
         </article>
       </Section>
+
+      {related.length > 0 && (
+        <Section style={{ paddingTop: 0 }}>
+          <SectionHead eyebrow="Keep reading" plain title='More from <span class="accent">the blog</span>' />
+          <div className="grid-3">
+            {related.map((item) => (
+              <BlogCard key={item.id} post={item} />
+            ))}
+          </div>
+        </Section>
+      )}
     </>
   );
 }

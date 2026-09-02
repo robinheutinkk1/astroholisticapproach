@@ -154,7 +154,7 @@ export function CategoryHub({
       <Section>
         <div className="grid-2">
           {items.map((item) => (
-            <article className="card reveal" key={item.href}>
+            <article className="card reveal is-linked" key={item.href}>
               <Rich as="h3" html={item.title} />
               <Rich as="p" className="card-desc" html={item.desc} />
               <Btn href={item.href} variant="secondary" arrow className="card-cta">
@@ -184,7 +184,10 @@ export function CardGrid({
   return (
     <div className={`grid-${columns}`}>
       {items.map((item) => (
-        <article className={`card reveal${item.badge ? " is-featured" : ""}`} key={item.title}>
+        <article
+          className={`card reveal${item.badge ? " is-featured" : ""} ${item.href ? "is-linked" : "is-static"}`}
+          key={item.title}
+        >
           {item.badge && (
             <span className="badge">
               <span className="dot" />

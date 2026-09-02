@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CtaBlock, PageHeader, Section } from "@/components/Layout";
 import { getPublishedPosts } from "@/lib/queries";
-import { formatDate } from "@/lib/format";
+import { BlogCard } from "@/components/BlogCard";
 
 export const revalidate = 300;
 
@@ -27,26 +26,7 @@ export default async function BlogPage() {
         {posts.length > 0 ? (
           <div className="grid-3">
             {posts.map((post) => (
-              <article className="blog-card reveal" key={post.id}>
-                <div className="blog-img">
-                  <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
-                    <circle cx="50" cy="50" r="30" stroke="#D4AF37" strokeWidth="0.6" />
-                    <circle cx="50" cy="50" r="18" stroke="#D4AF37" strokeWidth="0.6" opacity="0.6" />
-                    <circle cx="50" cy="50" r="6" fill="#D4AF37" opacity="0.5" />
-                  </svg>
-                </div>
-                <div className="blog-body">
-                  {post.category && <span className="blog-cat">{post.category}</span>}
-                  <h3>
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h3>
-                  <p>{post.excerpt}</p>
-                  <div className="blog-meta">
-                    <span>{post.read_minutes ? `${post.read_minutes} min read` : "Article"}</span>
-                    <span>{formatDate(post.published_at ?? post.created_at)}</span>
-                  </div>
-                </div>
-              </article>
+              <BlogCard key={post.id} post={post} />
             ))}
           </div>
         ) : (

@@ -5,6 +5,7 @@ import { CartProvider } from "@/components/CartProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { site } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
 import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
@@ -63,6 +64,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <SiteFooter />
         </CartProvider>
+        {/* Page views only, no cookies and no cross-site tracking, so this
+            needs no consent banner. */}
+        <Analytics />
       </body>
     </html>
   );
