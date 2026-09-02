@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { saveProduct, type ActionState } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
+import { ImageField } from "@/components/admin/ImageField";
 
 const icons = ["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"];
 
@@ -95,10 +96,12 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="image_url">Image URL — overrides the drawn mark</label>
-        <input id="image_url" name="image_url" type="text" defaultValue={product?.image_url ?? ""} />
-      </div>
+      <ImageField
+        name="image_url"
+        label="Product photo — replaces the drawn mark"
+        folder="products"
+        defaultValue={product?.image_url ?? ""}
+      />
 
       <div>
         <label htmlFor="description">Description — markdown</label>

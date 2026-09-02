@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { savePost, type ActionState } from "@/app/admin/actions";
 import type { Post } from "@/lib/types";
+import { ImageField } from "@/components/admin/ImageField";
 
 export function PostForm({ post }: { post?: Post }) {
   const action = savePost.bind(null, post?.id ?? null);
@@ -38,10 +39,12 @@ export function PostForm({ post }: { post?: Post }) {
       </div>
 
       <div className="admin-row">
-        <div>
-          <label htmlFor="cover_image">Cover image URL</label>
-          <input id="cover_image" name="cover_image" type="text" defaultValue={post?.cover_image ?? ""} />
-        </div>
+        <ImageField
+          name="cover_image"
+          label="Cover image"
+          folder="posts"
+          defaultValue={post?.cover_image ?? ""}
+        />
         <div>
           <label htmlFor="tags">Tags — comma separated</label>
           <input id="tags" name="tags" type="text" defaultValue={post?.tags.join(", ") ?? ""} />
