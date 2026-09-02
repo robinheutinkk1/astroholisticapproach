@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
 import { CardGrid } from "@/components/PageTemplates";
-import { prices } from "@/content/pricing";
 import { cardPriceRows } from "@/content/readings";
 
 export const metadata: Metadata = {
@@ -25,7 +25,9 @@ const kinds = [
   },
 ];
 
-export default function TarotPage() {
+export default async function TarotPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -63,8 +65,8 @@ export default function TarotPage() {
             </ul>
             <PriceLines
               rows={[
-                ...cardPriceRows,
-                { label: "Course or webinar", sub: "How to use the cards, one full year", price: prices.courses.oneYear },
+                ...cardPriceRows(t),
+                { label: "Course or webinar", sub: "How to use the cards, one full year", price: t.courses.oneYear },
               ]}
             />
           </InfoBox>

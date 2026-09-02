@@ -5,6 +5,7 @@ import { getPostBySlug, getPublishedPosts, getRelatedPosts } from "@/lib/queries
 import { BlogCard } from "@/components/BlogCard";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatDate } from "@/lib/format";
+import { getSettings } from "@/lib/settings";
 
 export const revalidate = 300;
 
@@ -20,6 +21,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const post = await getPostBySlug(slug);
   if (!post) return { title: "Article not found" };
 
+  // The article's own cover when it has one, the site-wide image otherwise, so
+  // every shared link carries a picture.
+  const settings = await getSettings();
+
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
@@ -28,7 +33,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: post.title,
       description: post.excerpt ?? undefined,
       publishedTime: post.published_at ?? undefined,
-      images: post.cover_image ? [post.cover_image] : undefined,
+      images: [post.cover_image ?? settings.seo.shareImage],
     },
   };
 }

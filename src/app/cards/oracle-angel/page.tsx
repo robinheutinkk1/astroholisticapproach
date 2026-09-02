@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 import { cardPriceRows } from "@/content/readings";
 
 export const metadata: Metadata = {
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     "Angel Therapy and Oracle Angel Cards for clarity, comfort and insight. Independent of any religious concept.",
 };
 
-export default function OracleAngelPage() {
+export default async function OracleAngelPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -55,8 +57,8 @@ export default function OracleAngelPage() {
             </ul>
             <PriceLines
               rows={[
-                ...cardPriceRows,
-                { label: "Course or webinar", sub: "How to use the cards, one full year", price: prices.courses.oneYear },
+                ...cardPriceRows(t),
+                { label: "Course or webinar", sub: "How to use the cards, one full year", price: t.courses.oneYear },
               ]}
             />
           </InfoBox>

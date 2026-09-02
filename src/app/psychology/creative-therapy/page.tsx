@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { Btn, CenteredCtas, InfoBox, PageHeader, Section } from "@/components/Layout";
 import { TreatmentSteps } from "@/components/TreatmentSteps";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Creative Therapy",
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     "Creative therapy using movement, dance, art and creative expression, based on Holism and Positive Psychology.",
 };
 
-export default function CreativeTherapyPage() {
+export default async function CreativeTherapyPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -43,9 +45,9 @@ export default function CreativeTherapyPage() {
             items={[
               "An intake Zoom interview and a personalised treatment plan",
               "Therapy sessions, personalised and one-on-one",
-              `Intake interview and treatment plan: <strong>${prices.therapy.intake}</strong>`,
-              `Therapy Zoom session, 30 minutes: <strong>${prices.therapy.session30}</strong>`,
-              `Therapy Zoom session, 60 minutes: <strong>${prices.therapy.session60}</strong>`,
+              `Intake interview and treatment plan: <strong>${t.therapy.intake}</strong>`,
+              `Therapy Zoom session, 30 minutes: <strong>${t.therapy.session30}</strong>`,
+              `Therapy Zoom session, 60 minutes: <strong>${t.therapy.session60}</strong>`,
             ]}
           />
         </div>

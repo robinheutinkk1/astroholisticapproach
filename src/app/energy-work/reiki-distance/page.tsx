@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { ServicePage } from "@/components/PageTemplates";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Long Distance Reiki",
   description: "Long Distance Reiki: five remote Zoom or audio sessions of 20 minutes, from anywhere worldwide.",
 };
 
-export default function ReikiPage() {
+export default async function ReikiPage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <ServicePage
       trail={[{ label: "Reiki &amp; Chakra", href: "/energy-work" }, { label: "Long Distance Reiki" }]}
@@ -25,7 +27,7 @@ export default function ReikiPage() {
         "For all Reiki services the 5 treatments are scheduled in advance",
         "Send a request via the contact page and we will fix the times and dates together",
       ]}
-      price={prices.reiki.package}
+      price={t.reiki.package}
       priceNote="5 x 20 min · Zoom or audio"
       interest="reiki"
     />

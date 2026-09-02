@@ -7,6 +7,7 @@ import { getAdminUser } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/format";
+import { defaults, schemas, type SettingsKey } from "@/lib/settings";
 
 export type ActionState = { error?: string };
 
@@ -304,4 +305,79 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
 
   const { data } = supabase.storage.from("media").getPublicUrl(path);
   return { url: data.publicUrl };
+}
+
+// ---------------------------------------------------------------------------
+// Site settings
+// ---------------------------------------------------------------------------
+
+export type SaveState = { status: "idle" | "saved" | "error"; message?: string };
+
+/**
+ * Settings touch the header, footer and most pages, so a save refreshes
+ * everything under the root layout rather than trying to name each page.
+ */
+function revalidateEverything() {
+  revalidatePath("/", "layout");
+}
+
+/**
+ * Writes one section after validating it against that section's schema, so a
+ * malformed value is refused here instead of reaching a page.
+ */
+export async function saveSettingsSection(
+  key: SettingsKey,
+  value: unknown,
+): Promise<SaveState> {
+  await requireAdmin();
+
+  const schema = schemas[key];
+  if (!schema) return { status: "error", message: "Unknown settings section." };
+
+  const parsed = schema.safeParse(value);
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const where = issue?.path.length ? `${issue.path.join(" › ")}: ` : "";
+    return { status: "error", message: `${where}${issue?.message ?? "Please check the form."}` };
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase
+    .from("site_settings")
+    .upsert({ key, value: parsed.data }, { onConflict: "key" });
+
+  if (error) {
+    console.error("[settings] save failed", error.message);
+    return { status: "error", message: "Saving failed. Please try again." };
+  }
+
+  revalidateEverything();
+  return { status: "saved" };
+}
+
+/**
+ * Removes a section so the site falls back to the values it shipped with —
+ * the way out of any edit that went wrong.
+ */
+export async function resetSettingsSections(keys: SettingsKey[]): Promise<SaveState> {
+  await requireAdmin();
+
+  const valid = keys.filter((key) => Boolean(schemas[key]));
+  if (valid.length === 0) return { status: "error", message: "Nothing to restore." };
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.from("site_settings").delete().in("key", valid);
+
+  if (error) {
+    console.error("[settings] reset failed", error.message);
+    return { status: "error", message: "Restoring failed. Please try again." };
+  }
+
+  revalidateEverything();
+  return { status: "saved" };
+}
+
+/** The shipped values, for the "this is what it was" hint in the forms. */
+export async function getDefaultsFor(key: SettingsKey) {
+  return defaults[key];
 }

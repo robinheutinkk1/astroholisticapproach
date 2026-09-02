@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { faq } from "@/content/faq";
 
-export function Faq() {
+
+export function Faq({ items }: { items: { q: string; a: string }[] }) {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
     <div className="faq-wrap reveal">
-      {faq.map((item, index) => (
+      {items.map((item, index) => (
         <div className={`faq-item${open === index ? " open" : ""}`} key={item.q}>
           <button
             type="button"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import Link from "next/link";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Ayurvedic Cooking Course & Webinar",
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     "A one-year Ayurvedic cooking course and webinar: cook with the seasons, your dosha, herbs, spices and whole foods.",
 };
 
-export default function CookingCoursePage() {
+export default async function CookingCoursePage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -52,8 +54,8 @@ export default function CookingCoursePage() {
           >
             <PriceLines
               rows={[
-                { label: "Intake interview and plan", sub: "Approximately 60 minutes", price: prices.ayurveda.cookingIntake },
-                { label: "Course and webinar", sub: "52 weeks, one full year", price: prices.ayurveda.cookingYear },
+                { label: "Intake interview and plan", sub: "Approximately 60 minutes", price: t.ayurveda.cookingIntake },
+                { label: "Course and webinar", sub: "52 weeks, one full year", price: t.ayurveda.cookingYear },
               ]}
             />
           </InfoBox>

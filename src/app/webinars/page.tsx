@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBlock, PageHeader, Section } from "@/components/Layout";
-import { groupSessions, type GroupSession } from "@/content/sessions";
+import { type GroupSession } from "@/content/sessions";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Group Sessions & Private Webinars",
@@ -31,8 +32,8 @@ const icons: Record<GroupSession["key"], React.ReactNode> = {
   ),
 };
 
-export default function WebinarsPage() {
-  const sessions = groupSessions.filter((session) => session.enabled);
+export default async function WebinarsPage() {
+  const sessions = (await getSettings()).sessions.filter((session) => session.enabled);
 
   return (
     <>

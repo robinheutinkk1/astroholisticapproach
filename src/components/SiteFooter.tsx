@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { footerNav, site } from "@/lib/site";
+import { getSettings } from "@/lib/settings";
 
 const socialIcons: Record<string, React.ReactNode> = {
   instagram: (
@@ -28,8 +29,9 @@ const socialIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-export function SiteFooter() {
-  const socials = Object.entries(site.socials).filter(([, url]) => url);
+export async function SiteFooter() {
+  const settings = await getSettings();
+  const socials = Object.entries(settings.socials).filter(([, url]) => url);
 
   return (
     <footer>
@@ -45,7 +47,7 @@ export function SiteFooter() {
               </span>
               Holistic <em>Astro</em> Approach
             </Link>
-            <p>{site.tagline}</p>
+            <p>{settings.brand.tagline}</p>
             {socials.length > 0 && (
               <div className="socials">
                 {socials.map(([key, url]) => (
@@ -93,13 +95,13 @@ export function SiteFooter() {
 
         <div className="footer-biz">
           <span>
-            <strong>KvK</strong> {site.business.kvk}
+            <strong>KvK</strong> {settings.business.kvk}
           </span>
           <span>
-            <strong>IBAN</strong> {site.business.iban}
+            <strong>IBAN</strong> {settings.business.iban}
           </span>
           <span>
-            <strong>E-mail</strong> <a href={`mailto:${site.email}`}>{site.email}</a>
+            <strong>E-mail</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
           </span>
         </div>
 

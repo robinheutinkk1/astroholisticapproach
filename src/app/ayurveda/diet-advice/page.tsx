@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { getSettings } from "@/lib/settings";
 import { Btn, CenteredCtas, InfoBox, PageHeader, PriceLines, Section } from "@/components/Layout";
-import { prices } from "@/content/pricing";
 
 export const metadata: Metadata = {
   title: "Ayurvedic Diet Advice",
   description: "Personalised Ayurvedic nutrition advice based on your mind-body constitution: Vata, Pitta or Kapha.",
 };
 
-export default function DietAdvicePage() {
+export default async function DietAdvicePage() {
+  const t = (await getSettings()).tariffs;
+
   return (
     <>
       <PageHeader
@@ -46,13 +48,13 @@ export default function DietAdvicePage() {
           >
             <PriceLines
               rows={[
-                { label: "Advice on one specific question", sub: "30-minute Zoom session", price: prices.ayurveda.consult30 },
+                { label: "Advice on one specific question", sub: "30-minute Zoom session", price: t.ayurveda.consult30 },
                 {
                   label: "Extensive advice on a submitted problem",
                   sub: "60-minute Zoom session, most chosen",
-                  price: prices.ayurveda.consult60,
+                  price: t.ayurveda.consult60,
                 },
-                { label: "Follow-up session", sub: "Each following Zoom session", price: prices.ayurveda.followUp },
+                { label: "Follow-up session", sub: "Each following Zoom session", price: t.ayurveda.followUp },
               ]}
             />
           </InfoBox>

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { PageHeader, Section } from "@/components/Layout";
-import { site } from "@/lib/site";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
   description: "Terms, conditions and privacy policy for Holistic Astro Approach.",
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const settings = await getSettings();
+
   return (
     <>
       <PageHeader
@@ -208,7 +210,7 @@ export default function TermsPage() {
           <p>
             9.1 Holistic Astro Approach values open communication and strives to provide a positive experience for every
             customer. If you have a question, concern, or complaint regarding the services, Holistic Astro Approach
-            encourages you to make contact as soon as possible by email at {site.email}.
+            encourages you to make contact as soon as possible by email at {settings.contact.email}.
           </p>
           <p>
             9.2 Holistic Astro Approach is committed to reviewing all concerns carefully and will make every reasonable
