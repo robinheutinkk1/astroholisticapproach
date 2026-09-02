@@ -3,12 +3,16 @@
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendNotification } from "@/lib/email";
+import { interests } from "@/content/faq";
+
+const allowedInterests = interests.map((option) => option.value);
 
 const contactSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name.").max(120),
-  email: z.email("Please enter a valid email address.").max(200),
-  subject: z.string().trim().max(200).optional(),
-  message: z.string().trim().min(10, "Please write at least a sentence.").max(5000),
+  firstName: z.string().trim().min(2, "Please enter your first name.").max(80),
+  lastName: z.string().trim().min(2, "Please enter your last name.").max(80),
+  email: z.email("Please enter a valid email.").max(200),
+  interest: z.string().refine((value) => allowedInterests.includes(value), "Please choose an option."),
+  message: z.string().trim().min(10, "Please share a few words about what you are seeking.").max(5000),
   // Honeypot: real people leave this hidden field empty.
   website: z.string().max(0).optional(),
 });
@@ -27,14 +31,20 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/**
+ * Replaces the HighLevel form webhook the old site posted to. The enquiry is
+ * stored in Postgres first, so it survives an email outage, and only then is a
+ * notification attempted.
+ */
 export async function submitContactForm(
   _previous: ContactState,
   formData: FormData,
 ): Promise<ContactState> {
   const parsed = contactSchema.safeParse({
-    name: formData.get("name"),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
     email: formData.get("email"),
-    subject: formData.get("subject") || undefined,
+    interest: formData.get("interest") ?? "",
     message: formData.get("message"),
     website: formData.get("website") || undefined,
   });
@@ -50,34 +60,40 @@ export async function submitContactForm(
     return { status: "error", message: "Please check the form.", fieldErrors };
   }
 
-  const { name, email, subject, message } = parsed.data;
+  const { firstName, lastName, email, interest, message } = parsed.data;
 
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase
-    .from("contact_messages")
-    .insert({ name, email, subject: subject ?? null, message });
+  const { error } = await supabase.from("contact_messages").insert({
+    first_name: firstName,
+    last_name: lastName,
+    email,
+    interest,
+    message,
+  });
 
   if (error) {
     console.error("[contact] insert failed", error.message);
     return {
       status: "error",
-      message: "Something went wrong saving your message. Please try again.",
+      message: "Something went wrong sending your message. Please try again, or email Milan directly.",
     };
   }
 
-  // The message is already stored; a failed email must not fail the request.
+  const interestLabel = interests.find((option) => option.value === interest)?.label ?? interest;
+
+  // The enquiry is already stored; a failed email must not fail the request.
   await sendNotification({
-    subject: `New enquiry from ${name}`,
+    subject: `New enquiry from ${firstName} ${lastName} — ${interestLabel}`,
     replyTo: email,
     html: `
-      <h2>New enquiry</h2>
-      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+      <h2>New session request</h2>
+      <p><strong>Name:</strong> ${escapeHtml(`${firstName} ${lastName}`)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <p><strong>Subject:</strong> ${escapeHtml(subject ?? "—")}</p>
+      <p><strong>Interested in:</strong> ${escapeHtml(interestLabel)}</p>
       <p><strong>Message:</strong></p>
       <p>${escapeHtml(message).replace(/\n/g, "<br />")}</p>
     `,
   });
 
-  return { status: "success", message: "Thank you — your message has arrived." };
+  return { status: "success" };
 }

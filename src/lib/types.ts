@@ -5,6 +5,8 @@ export type Post = {
   excerpt: string | null;
   content: string;
   cover_image: string | null;
+  category: string | null;
+  read_minutes: number | null;
   tags: string[];
   published: boolean;
   published_at: string | null;
@@ -21,8 +23,12 @@ export type Product = {
   summary: string | null;
   description: string;
   price_cents: number;
+  price_on_request: boolean;
   currency: string;
   image_url: string | null;
+  icon: string;
+  category: string;
+  badge: string | null;
   kind: ProductKind;
   stock: number | null;
   active: boolean;
@@ -57,9 +63,10 @@ export type OrderItem = {
 
 export type ContactMessage = {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  subject: string | null;
+  interest: string | null;
   message: string;
   handled: boolean;
   created_at: string;

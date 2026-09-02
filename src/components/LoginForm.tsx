@@ -27,20 +27,14 @@ export function LoginForm() {
     }
 
     const next = searchParams.get("next");
-    // A full navigation, so the server picks up the freshly set session cookie.
     router.replace(next && next.startsWith("/admin") ? next : "/admin");
     router.refresh();
   }
 
-  const fieldClass =
-    "w-full rounded-xl border border-white/15 bg-night-900/60 px-4 py-3 text-mist-100 placeholder:text-mist-500 focus:border-gold-400 focus:outline-none";
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="admin-form">
       <div>
-        <label htmlFor="email" className="mb-2 block text-sm text-mist-200">
-          Email
-        </label>
+        <label htmlFor="email">Email</label>
         <input
           id="email"
           type="email"
@@ -48,14 +42,11 @@ export function LoginForm() {
           autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className={fieldClass}
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="mb-2 block text-sm text-mist-200">
-          Password
-        </label>
+        <label htmlFor="password">Password</label>
         <input
           id="password"
           type="password"
@@ -63,21 +54,12 @@ export function LoginForm() {
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className={fieldClass}
         />
       </div>
 
-      {error && (
-        <p className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </p>
-      )}
+      {error && <p className="admin-alert">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-night-950 transition-colors hover:bg-gold-300 disabled:opacity-60"
-      >
+      <button type="submit" className="btn btn-primary" disabled={pending} style={{ justifyContent: "center" }}>
         {pending ? "Signing in…" : "Sign in"}
       </button>
     </form>

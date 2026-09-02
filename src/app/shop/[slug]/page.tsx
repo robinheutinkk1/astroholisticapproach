@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Btn, PageHeader, Section } from "@/components/Layout";
 import { getActiveProducts, getProductBySlug } from "@/lib/queries";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatPrice } from "@/lib/format";
-import { Section } from "@/components/ui";
+import { ProductIcon } from "@/components/ProductIcon";
 import { AddToCartButton } from "@/components/AddToCartButton";
 
 export const revalidate = 300;
@@ -21,10 +21,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Not found" };
 
-  return {
-    title: product.name,
-    description: product.summary ?? undefined,
-  };
+  return { title: product.name, description: product.summary ?? undefined };
 }
 
 export default async function ProductPage({ params }: Params) {
@@ -33,38 +30,61 @@ export default async function ProductPage({ params }: Params) {
   if (!product) notFound();
 
   const soldOut = product.stock !== null && product.stock <= 0;
+  const purchasable = !product.price_on_request && !soldOut;
 
   return (
-    <Section className="py-20">
-      <div className="mx-auto max-w-2xl">
-        <Link href="/shop" className="text-sm text-mist-500 hover:text-gold-300">
-          ← Readings
-        </Link>
+    <>
+      <PageHeader
+        trail={[{ label: "Shop", href: "/shop" }, { label: product.name }]}
+        eyebrow={product.badge ?? "Shop"}
+        title={product.name}
+        intro={product.summary ?? undefined}
+      />
+      <Section>
+        <div className="split">
+          <div className="split-img reveal" style={{ display: "grid", placeItems: "center", padding: 40 }}>
+            {product.image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={product.image_url} alt="" />
+            ) : (
+              <div style={{ width: "min(320px, 70%)" }}>
+                <ProductIcon name={product.icon} />
+              </div>
+            )}
+          </div>
 
-        <p className="mt-8 text-xs tracking-[0.15em] text-gold-400 uppercase">{product.kind}</p>
-        <h1 className="mt-3 font-display text-4xl leading-tight text-mist-100 sm:text-5xl">
-          {product.name}
-        </h1>
-        {product.summary && (
-          <p className="mt-5 text-lg leading-relaxed text-mist-300">{product.summary}</p>
-        )}
+          <div className="reveal">
+            <p className="price-head" style={{ marginBottom: 10 }}>
+              {product.price_on_request ? "Price" : "Tariff"}
+            </p>
+            <h2 className="accent" style={{ fontStyle: "normal" }}>
+              {product.price_on_request ? "On request" : formatPrice(product.price_cents, product.currency)}
+            </h2>
 
-        <div className="mt-8 flex flex-wrap items-center gap-5 border-y border-white/10 py-6">
-          <p className="font-display text-3xl text-gold-300">
-            {formatPrice(product.price_cents, product.currency)}
-          </p>
-          <AddToCartButton product={product} disabled={soldOut} />
-          {product.stock !== null && !soldOut && (
-            <p className="text-sm text-mist-500">{product.stock} available</p>
-          )}
-          {soldOut && <p className="text-sm text-mist-500">Currently unavailable.</p>}
+            <div className="article-body" style={{ margin: "24px 0 0" }}>
+              <div dangerouslySetInnerHTML={{ __html: renderMarkdown(product.description) }} />
+            </div>
+
+            {product.stock !== null && !soldOut && <p className="side-note">{product.stock} available</p>}
+            {soldOut && <p className="side-note">Currently unavailable.</p>}
+
+            <div className="course-cta" style={{ marginTop: 26 }}>
+              {purchasable ? (
+                <>
+                  <AddToCartButton product={product} className="btn btn-primary" />
+                  <Btn href="/cart" variant="secondary">
+                    Go to cart
+                  </Btn>
+                </>
+              ) : (
+                <Btn href="/contact?i=shop" arrow>
+                  Inquire about this piece
+                </Btn>
+              )}
+            </div>
+          </div>
         </div>
-
-        <div
-          className="prose-astro mt-10"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(product.description) }}
-        />
-      </div>
-    </Section>
+      </Section>
+    </>
   );
 }

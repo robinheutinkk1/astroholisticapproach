@@ -6,74 +6,62 @@ import { useFormStatus } from "react-dom";
 import { saveProduct, type ActionState } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
 
-const field =
-  "w-full rounded-xl border border-white/15 bg-night-900/60 px-4 py-2.5 text-mist-100 placeholder:text-mist-500 focus:border-gold-400 focus:outline-none";
-const label = "mb-2 block text-sm text-mist-200";
+const icons = ["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"];
 
 export function ProductForm({ product }: { product?: Product }) {
   const action = saveProduct.bind(null, product?.id ?? null);
   const [state, formAction] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-5">
+    <form action={formAction} className="admin-form">
       <div>
-        <label className={label} htmlFor="name">
-          Name
-        </label>
-        <input id="name" name="name" defaultValue={product?.name} required className={field} />
+        <label htmlFor="name">Name</label>
+        <input id="name" name="name" type="text" defaultValue={product?.name} required />
       </div>
 
-      <div>
-        <label className={label} htmlFor="slug">
-          Slug <span className="text-mist-500">(leave empty to generate from the name)</span>
-        </label>
-        <input id="slug" name="slug" defaultValue={product?.slug} className={field} />
-      </div>
-
-      <div>
-        <label className={label} htmlFor="summary">
-          Summary
-        </label>
-        <textarea
-          id="summary"
-          name="summary"
-          rows={2}
-          defaultValue={product?.summary ?? ""}
-          className={field}
-        />
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="admin-row">
         <div>
-          <label className={label} htmlFor="price">
-            Price <span className="text-mist-500">(e.g. 165.00)</span>
-          </label>
+          <label htmlFor="slug">Slug — leave empty to generate from the name</label>
+          <input id="slug" name="slug" type="text" defaultValue={product?.slug} />
+        </div>
+        <div>
+          <label htmlFor="category">Shop category</label>
+          <select id="category" name="category" defaultValue={product?.category ?? "reports"}>
+            <option value="reports">Reports &amp; Guides</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="crystals">Crystals</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="badge">Badge — e.g. Bestseller</label>
+          <input id="badge" name="badge" type="text" defaultValue={product?.badge ?? ""} />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="summary">Summary — shown on the card</label>
+        <textarea id="summary" name="summary" rows={2} defaultValue={product?.summary ?? ""} />
+      </div>
+
+      <div className="admin-row">
+        <div>
+          <label htmlFor="price">Price — e.g. 89.00</label>
           <input
             id="price"
             name="price"
+            type="text"
             inputMode="decimal"
             defaultValue={product ? (product.price_cents / 100).toFixed(2) : "0.00"}
             required
-            className={field}
           />
         </div>
         <div>
-          <label className={label} htmlFor="currency">
-            Currency
-          </label>
-          <input
-            id="currency"
-            name="currency"
-            maxLength={3}
-            defaultValue={product?.currency ?? "eur"}
-            className={field}
-          />
+          <label htmlFor="currency">Currency</label>
+          <input id="currency" name="currency" type="text" maxLength={3} defaultValue={product?.currency ?? "eur"} />
         </div>
         <div>
-          <label className={label} htmlFor="kind">
-            Type
-          </label>
-          <select id="kind" name="kind" defaultValue={product?.kind ?? "service"} className={field}>
+          <label htmlFor="kind">Type</label>
+          <select id="kind" name="kind" defaultValue={product?.kind ?? "physical"}>
             <option value="service">Service</option>
             <option value="digital">Digital</option>
             <option value="physical">Physical</option>
@@ -81,78 +69,52 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <label className="admin-check">
+        <input type="checkbox" name="price_on_request" defaultChecked={product?.price_on_request ?? false} />
+        Price on request — shows an enquiry link instead of a buy button
+      </label>
+
+      <div className="admin-row">
         <div>
-          <label className={label} htmlFor="stock">
-            Stock <span className="text-mist-500">(leave empty for unlimited)</span>
-          </label>
-          <input
-            id="stock"
-            name="stock"
-            type="number"
-            min={0}
-            defaultValue={product?.stock ?? ""}
-            className={field}
-          />
+          <label htmlFor="stock">Stock — leave empty for unlimited</label>
+          <input id="stock" name="stock" type="number" min={0} defaultValue={product?.stock ?? ""} />
         </div>
         <div>
-          <label className={label} htmlFor="sort_order">
-            Sort order
-          </label>
-          <input
-            id="sort_order"
-            name="sort_order"
-            type="number"
-            defaultValue={product?.sort_order ?? 0}
-            className={field}
-          />
+          <label htmlFor="sort_order">Sort order</label>
+          <input id="sort_order" name="sort_order" type="number" defaultValue={product?.sort_order ?? 0} />
+        </div>
+        <div>
+          <label htmlFor="icon">Drawn mark — used when there is no image</label>
+          <select id="icon" name="icon" defaultValue={product?.icon ?? "star"}>
+            {icons.map((icon) => (
+              <option value={icon} key={icon}>
+                {icon}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       <div>
-        <label className={label} htmlFor="image_url">
-          Image URL
-        </label>
-        <input
-          id="image_url"
-          name="image_url"
-          defaultValue={product?.image_url ?? ""}
-          className={field}
-        />
+        <label htmlFor="image_url">Image URL — overrides the drawn mark</label>
+        <input id="image_url" name="image_url" type="text" defaultValue={product?.image_url ?? ""} />
       </div>
 
       <div>
-        <label className={label} htmlFor="description">
-          Description <span className="text-mist-500">(markdown)</span>
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={14}
-          defaultValue={product?.description ?? ""}
-          className={`${field} font-mono text-sm`}
-        />
+        <label htmlFor="description">Description — markdown</label>
+        <textarea id="description" name="description" rows={14} className="mono" defaultValue={product?.description ?? ""} />
       </div>
 
-      <label className="flex items-center gap-3 text-sm text-mist-200">
-        <input
-          type="checkbox"
-          name="active"
-          defaultChecked={product?.active ?? true}
-          className="h-4 w-4 accent-gold-400"
-        />
+      <label className="admin-check">
+        <input type="checkbox" name="active" defaultChecked={product?.active ?? true} />
         Visible in the shop
       </label>
 
-      {state.error && (
-        <p className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {state.error}
-        </p>
-      )}
+      {state.error && <p className="admin-alert">{state.error}</p>}
 
-      <div className="flex items-center gap-4 pt-2">
+      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
         <SaveButton />
-        <Link href="/admin/products" className="text-sm text-mist-500 hover:text-mist-200">
+        <Link href="/admin/products" className="admin-danger">
           Cancel
         </Link>
       </div>
@@ -163,11 +125,7 @@ export function ProductForm({ product }: { product?: Product }) {
 function SaveButton() {
   const { pending } = useFormStatus();
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="rounded-full bg-gold-400 px-6 py-2.5 text-sm font-semibold text-night-950 hover:bg-gold-300 disabled:opacity-60"
-    >
+    <button type="submit" className="btn btn-primary" disabled={pending}>
       {pending ? "Saving…" : "Save product"}
     </button>
   );

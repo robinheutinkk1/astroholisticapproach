@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Btn, PageHeader, Section } from "@/components/Layout";
 import { getPostBySlug, getPublishedPosts } from "@/lib/queries";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatDate } from "@/lib/format";
-import { Section } from "@/components/ui";
 
 export const revalidate = 300;
 
@@ -18,7 +17,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  if (!post) return { title: "Post not found" };
+  if (!post) return { title: "Article not found" };
 
   return {
     title: post.title,
@@ -39,49 +38,42 @@ export default async function PostPage({ params }: Params) {
   if (!post) notFound();
 
   return (
-    <Section className="py-20">
-      <article className="mx-auto max-w-2xl">
-        <Link href="/blog" className="text-sm text-mist-500 hover:text-gold-300">
-          ← Journal
-        </Link>
+    <>
+      <PageHeader
+        trail={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+        eyebrow={post.category ?? "Article"}
+        title={post.title}
+        intro={post.excerpt ?? undefined}
+      />
+      <Section>
+        <article className="article-body reveal">
+          <div className="article-meta">
+            <span>{formatDate(post.published_at ?? post.created_at)}</span>
+            {post.read_minutes && <span>{post.read_minutes} min read</span>}
+          </div>
 
-        <p className="mt-8 text-xs tracking-wide text-mist-500 uppercase">
-          {formatDate(post.published_at ?? post.created_at)}
-        </p>
-        <h1 className="mt-3 font-display text-4xl leading-tight text-mist-100 sm:text-5xl">
-          {post.title}
-        </h1>
-        {post.excerpt && <p className="mt-5 text-lg leading-relaxed text-mist-300">{post.excerpt}</p>}
+          {post.cover_image && (
+            // Author-supplied URL, so a plain img avoids pinning the remote
+            // image allowlist to one host.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.cover_image} alt="" style={{ marginTop: 28, borderRadius: "var(--radius)" }} />
+          )}
 
-        {post.cover_image && (
-          // Cover images are author-supplied URLs, so a plain img avoids
-          // pinning the whole site's remote-image allowlist to one host.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={post.cover_image}
-            alt=""
-            className="mt-10 w-full rounded-2xl border border-white/10"
+          <div
+            style={{ marginTop: 28 }}
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
           />
-        )}
 
-        <div
-          className="prose-astro mt-10"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
-        />
-
-        {post.tags.length > 0 && (
-          <ul className="mt-12 flex flex-wrap gap-2 border-t border-white/10 pt-6">
-            {post.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-full border border-white/10 px-3 py-1 text-xs text-mist-500"
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
-        )}
-      </article>
-    </Section>
+          <div className="course-cta" style={{ marginTop: 40 }}>
+            <Btn href="/blog" variant="secondary">
+              Back to the blog
+            </Btn>
+            <Btn href="/contact" arrow>
+              Book a session
+            </Btn>
+          </div>
+        </article>
+      </Section>
+    </>
   );
 }

@@ -9,7 +9,6 @@ const statuses = ["pending", "paid", "fulfilled", "cancelled"] as const;
 
 export default async function AdminOrdersPage() {
   const supabase = createSupabaseAdminClient();
-
   const { data } = await supabase
     .from("orders")
     .select("*, order_items(*)")
@@ -20,68 +19,55 @@ export default async function AdminOrdersPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl text-mist-100">Orders</h1>
+      <h2 style={{ fontSize: "1.5rem" }}>Orders</h2>
 
-      <ul className="mt-8 space-y-4">
+      <div style={{ display: "grid", gap: 16, marginTop: 28 }}>
         {orders.map((order) => (
-          <li key={order.id} className="rounded-2xl border border-white/10 bg-night-900/40 p-5">
-            <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="admin-card" key={order.id}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between" }}>
               <div>
-                <p className="font-medium text-mist-100">
-                  {order.customer_name ?? "—"}{" "}
-                  <span className="text-mist-500">{order.email ?? ""}</span>
-                </p>
-                <p className="mt-1 text-sm text-mist-500">{formatDate(order.created_at)}</p>
+                <strong>{order.customer_name ?? "—"}</strong>{" "}
+                <span style={{ color: "var(--c-mute-2)" }}>{order.email ?? ""}</span>
+                <div className="sub" style={{ fontSize: "0.8rem", color: "var(--c-mute-2)", marginTop: 4 }}>
+                  {formatDate(order.created_at)}
+                </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <p className="font-display text-xl text-gold-300">
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                <strong style={{ color: "var(--c-gold)", fontSize: "1.1rem" }}>
                   {formatPrice(order.amount_cents, order.currency)}
-                </p>
-                <form action={setOrderStatus} className="flex items-center gap-2">
+                </strong>
+                <form action={setOrderStatus} className="admin-form" style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <input type="hidden" name="id" value={order.id} />
                   <label className="sr-only" htmlFor={`status-${order.id}`}>
                     Order status
                   </label>
-                  <select
-                    id={`status-${order.id}`}
-                    name="status"
-                    defaultValue={order.status}
-                    className="rounded-lg border border-white/15 bg-night-950 px-3 py-1.5 text-sm text-mist-100"
-                  >
+                  <select id={`status-${order.id}`} name="status" defaultValue={order.status} style={{ width: "auto" }}>
                     {statuses.map((status) => (
-                      <option key={status} value={status}>
+                      <option value={status} key={status}>
                         {status}
                       </option>
                     ))}
                   </select>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-mist-300 hover:border-gold-400 hover:text-gold-300"
-                  >
+                  <button type="submit" className="admin-ghost">
                     Update
                   </button>
                 </form>
               </div>
             </div>
 
-            <ul className="mt-4 border-t border-white/10 pt-4 text-sm text-mist-300">
+            <ul style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--c-line-soft)", color: "var(--c-mute)", fontSize: "0.9rem" }}>
               {order.order_items?.map((item) => (
                 <li key={item.id}>
-                  {item.quantity} × {item.name} —{" "}
-                  {formatPrice(item.unit_price_cents * item.quantity, order.currency)}
+                  {item.quantity} × {item.name} — {formatPrice(item.unit_price_cents * item.quantity, order.currency)}
                 </li>
               ))}
             </ul>
-          </li>
+          </div>
         ))}
 
-        {orders.length === 0 && (
-          <li className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-mist-500">
-            No orders yet.
-          </li>
-        )}
-      </ul>
+        {orders.length === 0 && <div className="empty-state">No orders yet.</div>}
+      </div>
     </div>
   );
 }

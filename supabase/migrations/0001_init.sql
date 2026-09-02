@@ -68,6 +68,8 @@ create table public.posts (
   excerpt      text,
   content      text        not null default '',   -- markdown
   cover_image  text,
+  category     text,                              -- shown as the label on a blog card
+  read_minutes integer,                           -- estimated reading time
   tags         text[]      not null default '{}',
   published    boolean     not null default false,
   published_at timestamptz,
@@ -89,8 +91,15 @@ create table public.products (
   summary          text,
   description      text        not null default '',  -- markdown
   price_cents      integer     not null check (price_cents >= 0),
+  price_on_request boolean     not null default false, -- shown as "On request"; not purchasable
   currency         text        not null default 'eur',
   image_url        text,
+  -- Falls back to a drawn mark when no image_url is set: chart, star, book,
+  -- circle, heart, beads, gem, triple or leaf.
+  icon             text        not null default 'star',
+  -- Filter button on the shop page: reports, jewelry or crystals.
+  category         text        not null default 'reports',
+  badge            text,                               -- "Bestseller", "New", "Digital", ...
   kind             text        not null default 'service' check (kind in ('service', 'digital', 'physical')),
   stock            integer,                            -- null = unlimited
   active           boolean     not null default true,
@@ -100,6 +109,7 @@ create table public.products (
 );
 
 create index products_active_idx on public.products (active, sort_order);
+create index products_category_idx on public.products (category);
 create trigger products_touch before update on public.products
   for each row execute function public.touch_updated_at();
 
@@ -138,9 +148,11 @@ create index order_items_order_idx on public.order_items (order_id);
 -- ---------------------------------------------------------------------------
 create table public.contact_messages (
   id         uuid primary key default gen_random_uuid(),
-  name       text        not null,
+  first_name text        not null,
+  last_name  text        not null,
   email      text        not null,
-  subject    text,
+  -- Which service the enquiry is about, matching the contact form's dropdown.
+  interest   text,
   message    text        not null,
   handled    boolean     not null default false,
   created_at timestamptz not null default now()

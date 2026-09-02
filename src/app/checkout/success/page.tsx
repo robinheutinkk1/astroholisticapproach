@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Button, Section } from "@/components/ui";
+import { Btn, PageHeader, Section } from "@/components/Layout";
 import { ClearCartOnMount } from "@/components/ClearCartOnMount";
 
 export const metadata: Metadata = {
@@ -9,25 +9,31 @@ export const metadata: Metadata = {
 
 export default function CheckoutSuccessPage() {
   return (
-    <Section className="py-28">
+    <>
       <ClearCartOnMount />
-      <div className="mx-auto max-w-lg text-center">
-        <p aria-hidden className="text-4xl text-gold-300">
-          ✷
-        </p>
-        <h1 className="mt-6 font-display text-4xl text-mist-100">Payment received</h1>
-        <p className="mt-5 leading-relaxed text-mist-300">
-          Thank you. A confirmation is on its way to the email address you used at checkout, along
-          with everything you need for the next step — a booking link for sessions, or a download
-          link for written material.
-        </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Button href="/blog" variant="ghost">
-            Read the journal
-          </Button>
-          <Button href="/">Back to the site</Button>
+      <PageHeader
+        trail={[{ label: "Shop", href: "/shop" }, { label: "Thank you" }]}
+        eyebrow="Order received"
+        title='Payment <span class="accent">received</span>'
+        intro="Thank you. A confirmation is on its way to the email address you used at checkout, and Milan will be in touch about the next step."
+      />
+      <Section>
+        <div className="cta-block reveal">
+          <h2>What happens next</h2>
+          <p>
+            Written work and downloads are sent by e-mail. Pieces made to your chart start with a short message from
+            Milan about the stones. Anything you would like to add, just reply to the confirmation.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <Btn href="/shop" variant="secondary">
+              Back to the shop
+            </Btn>
+            <Btn href="/" arrow>
+              Back to the site
+            </Btn>
+          </div>
         </div>
-      </div>
-    </Section>
+      </Section>
+    </>
   );
 }

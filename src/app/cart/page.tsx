@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader, Section } from "@/components/ui";
+import { PageHeader, Section } from "@/components/Layout";
 import { CartView } from "@/components/CartView";
 
 export const metadata: Metadata = {
@@ -9,11 +9,13 @@ export const metadata: Metadata = {
 
 export default function CartPage() {
   return (
-    <Section className="py-20">
-      <PageHeader title="Your cart" />
-      <div className="mx-auto mt-12 max-w-2xl">
-        <CartView />
-      </div>
-    </Section>
+    <>
+      <PageHeader trail={[{ label: "Shop", href: "/shop" }, { label: "Cart" }]} eyebrow="Shop" title="Your cart" />
+      <Section>
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <CartView />
+        </div>
+      </Section>
+    </>
   );
 }

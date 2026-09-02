@@ -1,38 +1,90 @@
--- Sample content so the site renders before the real copy is imported.
--- Safe to run repeatedly; safe to delete once real content is in.
+-- Content carried over from the original single-file site.
+--
+-- The nine products are the ones that were already listed on the site. The six
+-- articles are the titles that were queued for the blog; they are inserted as
+-- DRAFTS with their excerpts, because no article body was ever written. Open
+-- each one in /admin, write it, tick Published.
+--
+-- Safe to run repeatedly.
 
-insert into public.products (slug, name, summary, description, price_cents, currency, kind, sort_order)
+insert into public.products
+  (slug, name, summary, description, price_cents, price_on_request, currency, icon, category, badge, kind, sort_order)
 values
-  ('natal-chart-reading', 'Natal Chart Reading',
-   'A 90-minute deep dive into your birth chart, recorded so you can revisit it.',
-   E'Your natal chart is the sky at the moment you arrived. In this 90-minute session we read it as a whole: the elemental balance, the houses that carry the most weight, and the aspects that shape how you meet the world.\n\n**What you receive**\n\n- A 90-minute live session over video\n- A recording of the full reading\n- A written summary with the key placements\n\nBooking details are sent by email after checkout.',
-   16500, 'eur', 'service', 1),
-  ('solar-return-reading', 'Solar Return Reading',
-   'A year-ahead reading cast for your birthday, mapping the themes of your next cycle.',
-   E'Once a year the Sun returns to the exact degree it held at your birth. The chart for that moment describes the year that follows.\n\nWe look at where the emphasis falls, which areas of life are lit up, and how that interacts with the transits already running through your natal chart.',
-   12500, 'eur', 'service', 2),
-  ('relationship-synastry', 'Relationship Synastry',
-   'Two charts side by side: what flows easily between you and what asks for work.',
-   E'Synastry compares two charts to show the texture of a relationship — romantic, creative, or family.\n\nThe session is for one or both people. We cover the contacts that create ease, the ones that create friction, and the composite chart that describes the relationship as its own entity.',
-   19500, 'eur', 'service', 3),
-  ('holistic-astrology-workbook', 'The Holistic Astrology Workbook',
-   'A 60-page PDF for reading your own chart, with exercises and reference tables.',
-   E'A downloadable workbook that takes you from the twelve signs through houses, aspects and transits, with exercises at the end of each chapter.\n\nDelivered as a PDF immediately after purchase.',
-   3200, 'eur', 'digital', 4)
+  ('written-chart-report', 'Written Chart Report by e-mail',
+   'A personalised written report covering your full chart and key life themes, delivered after your reading.',
+   E'A personalised written report covering your full chart and key life themes, delivered after your reading.',
+   20000, false, 'eur', 'chart', 'reports', 'Bestseller', 'digital', 1),
+
+  ('lunar-ritual-kit', 'Lunar Ritual Kit',
+   'Selenite, palo santo and a 12-month moon-phase journal for monthly ritual practice.',
+   E'Selenite, palo santo and a 12-month moon-phase journal for monthly ritual practice.',
+   7200, false, 'eur', 'star', 'reports', 'New', 'physical', 2),
+
+  ('12-month-forecast-ebook', '12-Month Forecast eBook',
+   'A guide to the planetary movements of the year, sign by sign, with weekly notes.',
+   E'A guide to the planetary movements of the year, sign by sign, with weekly notes.',
+   2900, false, 'eur', 'book', 'reports', 'Digital', 'digital', 3),
+
+  ('ayurveda-starter-guide', 'Ayurveda Starter Guide',
+   'An introduction to Ayurveda: dosha test, food principles and a starter routine.',
+   E'An introduction to Ayurveda: dosha test, food principles and a starter routine.',
+   1900, false, 'eur', 'leaf', 'reports', 'Digital', 'digital', 4),
+
+  ('grounding-bracelet', 'Grounding Bracelet',
+   'Black tourmaline, hematite, smoky quartz. For periods of overwhelm or during major transitions.',
+   E'Black tourmaline, hematite, smoky quartz. For periods of overwhelm or during major transitions.',
+   8900, false, 'eur', 'circle', 'jewelry', 'Bestseller', 'physical', 5),
+
+  ('heart-centre-pendant', 'Heart Centre Pendant',
+   'Rose quartz core in a 925 silver setting. Worn for opening through grief or relational shifts.',
+   E'Rose quartz core in a 925 silver setting. Worn for opening through grief or relational shifts.',
+   12900, false, 'eur', 'heart', 'jewelry', 'New', 'physical', 6),
+
+  ('personalised-bracelet', 'Personalised Bracelet',
+   'A bracelet made in combination with your natal chart, so the bracelet or pendant is a unique, one-off jewel made especially for you.',
+   E'A bracelet made in combination with your natal chart, so the bracelet or pendant is a unique, one-off jewel made especially for you.\n\nSend a message describing what you are working with and Milan selects the stones from your chart.',
+   0, true, 'eur', 'beads', 'jewelry', 'Custom', 'physical', 7),
+
+  ('citrine-cluster', 'Citrine Cluster',
+   'Hand-selected cluster for clarity and decision-making. Ethically sourced.',
+   E'Hand-selected cluster for clarity and decision-making. Ethically sourced.',
+   5500, false, 'eur', 'gem', 'crystals', 'Single', 'physical', 8),
+
+  ('clear-quartz-set', 'Clear Quartz Set',
+   'A trio of clear quartz pieces. The all-purpose stones every practice needs.',
+   E'A trio of clear quartz pieces. The all-purpose stones every practice needs.',
+   4200, false, 'eur', 'triple', 'crystals', 'Set of 3', 'physical', 9)
 on conflict (slug) do nothing;
 
-insert into public.posts (slug, title, excerpt, content, tags, published, published_at)
+insert into public.posts (slug, title, excerpt, content, category, read_minutes, published)
 values
-  ('what-holistic-astrology-means', 'What a Holistic Approach to Astrology Actually Means',
-   'Your chart is not a verdict. It is a description of the material you were given — and holistic practice starts with what you do with it.',
-   E'Most people meet astrology as prediction: what will happen, and when. A holistic approach starts somewhere else — with the question of what you are working with.\n\n## The chart as material, not verdict\n\nA natal chart describes tendencies, not outcomes. Saturn on your Midheaven does not decide your career; it describes the shape of the effort your career will ask from you. That distinction is the whole practice.\n\n## Body, pattern, and timing\n\nHolistic work reads three layers together:\n\n1. **The natal chart** — the material you were given.\n2. **The lived pattern** — how you have actually been using it.\n3. **The current transits** — what the sky is asking of you right now.\n\nNone of the three is enough alone. Read together, they tend to describe something you already half knew.\n\n## Where to start\n\nIf you are new to your own chart, start with the elemental balance and the houses that hold the most planets. That is usually enough to recognise yourself.',
-   array['foundations', 'practice'], true, now() - interval '21 days'),
-  ('reading-your-saturn-return', 'Reading Your Saturn Return Without Dread',
-   'Around ages 29, 58 and 87, Saturn comes back to where it started. It has a reputation. Here is what it is actually doing.',
-   E'Saturn takes roughly 29.5 years to travel the zodiac, so somewhere around your thirtieth birthday it returns to the degree it occupied when you were born. The internet has decided this is a catastrophe. It is not.\n\n## What a return is\n\nA return is a cycle closing and reopening. Saturn''s cycle is about structure: the commitments you have made, the ones you have avoided, and whether the life you built can hold the weight you are putting on it.\n\n## Why it feels heavy\n\nSaturn removes what was never load-bearing. Jobs, relationships and habits that were held together by momentum rather than choice tend to come apart. That is uncomfortable, and it is also the point.\n\n## Working with it\n\n- Look at the house Saturn occupies natally. That is the area under review.\n- Notice what you are already avoiding. Saturn returns rarely surprise anyone.\n- Choose deliberately rather than waiting to be forced.\n\nPeople who come out of a Saturn return well are usually the ones who made the decision before it was made for them.',
-   array['transits', 'saturn'], true, now() - interval '9 days'),
-  ('moon-phases-and-rhythm', 'Working With the Moon''s Phases as a Rhythm, Not a Rule',
-   'Lunar cycles are useful the way seasons are useful: as a rhythm to plan against, not a set of instructions.',
-   E'The moon moves through its full cycle every 29.5 days. Used well, that cycle is a planning rhythm.\n\n## A simple structure\n\n- **New moon** — begin, decide, plant.\n- **First quarter** — the first real obstacle appears. Adjust.\n- **Full moon** — everything is visible, including what is not working.\n- **Last quarter** — release, edit, finish.\n\n## Keep it light\n\nIf a lunar practice starts producing anxiety about doing things on the "wrong" day, it has stopped being useful. The cycle is a rhythm you can lean on, not a rule that governs you.',
-   array['moon', 'practice'], true, now() - interval '3 days')
+  ('moon-phases-as-a-planning-tool',
+   'How to read the moon phases as a real planning tool, not a vibe',
+   'A practical guide to using the lunar cycle for what you actually do each month.',
+   '', 'Astrology', 8, false),
+
+  ('saturn-return-survival-guide',
+   'Saturn Return: a survival guide for your late twenties',
+   'The most important transit of your life, in plain language, and the mistakes most people make.',
+   '', 'Psychology', 12, false),
+
+  ('why-your-morning-routine-keeps-failing',
+   'Why your morning routine keeps failing',
+   'Most Ayurvedic morning routines are built for monks. Here is the version for working adults.',
+   '', 'Ayurveda', 7, false),
+
+  ('rising-sign-explained',
+   'Your rising sign explained: the mask and the medicine',
+   'Why the ascendant matters more than your sun sign, and how to work with it.',
+   '', 'Astrology', 10, false),
+
+  ('choose-your-first-crystal',
+   'How to choose your first crystal without getting scammed',
+   'A short guide to sourcing real stones and avoiding the dyed glass.',
+   '', 'Cards', 6, false),
+
+  ('shadow-work-without-the-aesthetic',
+   'Shadow work without the Instagram aesthetic',
+   'What Jungian shadow work actually looks like in practice, with five concrete prompts.',
+   '', 'Psychology', 9, false)
 on conflict (slug) do nothing;

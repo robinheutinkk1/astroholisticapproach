@@ -1,9 +1,15 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { formatDate } from "@/lib/format";
 import { toggleMessageHandled } from "@/app/admin/actions";
+import { interests } from "@/content/faq";
 import type { ContactMessage } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+function interestLabel(value: string | null): string {
+  if (!value) return "—";
+  return interests.find((option) => option.value === value)?.label ?? value;
+}
 
 export default async function AdminMessagesPage() {
   const supabase = createSupabaseAdminClient();
@@ -17,59 +23,50 @@ export default async function AdminMessagesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl text-mist-100">Messages</h1>
+      <h2 style={{ fontSize: "1.5rem" }}>Messages</h2>
 
-      <ul className="mt-8 space-y-4">
+      <div style={{ display: "grid", gap: 16, marginTop: 28 }}>
         {messages.map((message) => (
-          <li
-            key={message.id}
-            className={`rounded-2xl border p-5 ${
-              message.handled
-                ? "border-white/10 bg-night-900/30 opacity-70"
-                : "border-gold-500/30 bg-night-900/50"
-            }`}
-          >
-            <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className={`admin-card${message.handled ? "" : " unread"}`} key={message.id}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between" }}>
               <div>
-                <p className="font-medium text-mist-100">
-                  {message.name}{" "}
-                  <a
-                    href={`mailto:${message.email}`}
-                    className="text-sm text-gold-300 hover:underline"
-                  >
-                    {message.email}
-                  </a>
-                </p>
-                <p className="mt-1 text-sm text-mist-500">
-                  {formatDate(message.created_at)}
-                  {message.subject ? ` · ${message.subject}` : ""}
-                </p>
+                <strong>
+                  {message.first_name} {message.last_name}
+                </strong>{" "}
+                <a href={`mailto:${message.email}`} style={{ color: "var(--c-gold)", fontSize: "0.9rem" }}>
+                  {message.email}
+                </a>
+                <div style={{ fontSize: "0.8rem", color: "var(--c-mute-2)", marginTop: 4 }}>
+                  {formatDate(message.created_at)} · {interestLabel(message.interest)}
+                </div>
               </div>
 
               <form action={toggleMessageHandled}>
                 <input type="hidden" name="id" value={message.id} />
                 <input type="hidden" name="handled" value={String(message.handled)} />
-                <button
-                  type="submit"
-                  className="rounded-full border border-white/20 px-4 py-1.5 text-xs text-mist-300 hover:border-gold-400 hover:text-gold-300"
-                >
+                <button type="submit" className="admin-ghost">
                   {message.handled ? "Mark unread" : "Mark handled"}
                 </button>
               </form>
             </div>
 
-            <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed whitespace-pre-wrap text-mist-200">
+            <p
+              style={{
+                marginTop: 16,
+                paddingTop: 16,
+                borderTop: "1px solid var(--c-line-soft)",
+                color: "var(--c-mute)",
+                fontSize: "0.92rem",
+                whiteSpace: "pre-wrap",
+              }}
+            >
               {message.message}
             </p>
-          </li>
+          </div>
         ))}
 
-        {messages.length === 0 && (
-          <li className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-mist-500">
-            No messages yet.
-          </li>
-        )}
-      </ul>
+        {messages.length === 0 && <div className="empty-state">No messages yet.</div>}
+      </div>
     </div>
   );
 }

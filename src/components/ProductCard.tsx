@@ -1,30 +1,39 @@
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
-import type { Product } from "@/lib/types";
+import { ProductIcon } from "@/components/ProductIcon";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import type { Product } from "@/lib/types";
 
 export function ProductCard({ product }: { product: Product }) {
   const soldOut = product.stock !== null && product.stock <= 0;
 
   return (
-    <article className="flex flex-col rounded-2xl border border-white/10 bg-night-900/50 p-6 transition-colors hover:border-gold-500/40">
-      <p className="text-xs tracking-[0.15em] text-gold-400 uppercase">{product.kind}</p>
-      <h3 className="mt-2 font-display text-xl text-mist-100">
-        <Link href={`/shop/${product.slug}`}>{product.name}</Link>
-      </h3>
-      {product.summary && (
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-mist-300">{product.summary}</p>
-      )}
-      <p className="mt-5 font-display text-2xl text-gold-300">
-        {formatPrice(product.price_cents, product.currency)}
-      </p>
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <AddToCartButton product={product} disabled={soldOut} />
-        <Link href={`/shop/${product.slug}`} className="text-sm text-mist-300 hover:text-gold-300">
-          Details
-        </Link>
+    <article className="product-card reveal" data-cat={product.category}>
+      <div className="product-img">
+        {product.badge && <span className="product-tag">{product.badge}</span>}
+        {product.image_url ? (
+          // Author-supplied URL, so a plain img keeps the remote-image
+          // allowlist from having to cover every host Milan might use.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image_url} alt="" />
+        ) : (
+          <ProductIcon name={product.icon} />
+        )}
       </div>
-      {soldOut && <p className="mt-3 text-xs text-mist-500">Currently unavailable.</p>}
+      <div className="product-body">
+        <h3>
+          <Link href={`/shop/${product.slug}`}>{product.name}</Link>
+        </h3>
+        <p>{product.summary}</p>
+        <div className="product-foot">
+          <strong>{product.price_on_request ? "On request" : formatPrice(product.price_cents, product.currency)}</strong>
+          {product.price_on_request || soldOut ? (
+            <Link href={`/contact?i=shop`}>Inquire →</Link>
+          ) : (
+            <AddToCartButton product={product} />
+          )}
+        </div>
+      </div>
     </article>
   );
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { z } from "zod";
 import { getStripe } from "@/lib/stripe";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -6,6 +7,14 @@ import { env } from "@/lib/env";
 import type { Product } from "@/lib/types";
 
 export const runtime = "nodejs";
+
+/**
+ * Where physical orders can be posted directly. Anywhere else is arranged by
+ * e-mail after the order, because overseas shipping is quoted separately.
+ */
+const SHIPPING_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] = [
+  "NL", "BE", "DE", "FR", "LU", "AT", "DK", "SE", "FI", "IE", "IT", "ES", "PT", "PL", "CZ", "GB",
+];
 
 const checkoutSchema = z.object({
   items: z
@@ -77,6 +86,10 @@ export async function POST(request: Request) {
     );
   }
 
+  // Anything physical has to be posted, so Stripe collects an address for it.
+  // Shipping outside this list is quoted separately by e-mail, per the terms.
+  const needsShipping = lines.some(({ product }) => product.kind === "physical");
+
   const stripe = getStripe();
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -95,6 +108,7 @@ export async function POST(request: Request) {
     cancel_url: `${env.siteUrl}/cart`,
     automatic_tax: { enabled: false },
     billing_address_collection: "auto",
+    ...(needsShipping ? { shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES } } : {}),
   });
 
   const amountCents = lines.reduce(

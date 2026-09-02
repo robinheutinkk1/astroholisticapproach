@@ -43,7 +43,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   );
 }
 
-export async function getActiveProducts(limit?: number): Promise<Product[]> {
+export async function getActiveProducts(
+  options: { limit?: number; category?: string } = {},
+): Promise<Product[]> {
   const supabase = createSupabasePublicClient();
   let query = supabase
     .from("products")
@@ -52,7 +54,8 @@ export async function getActiveProducts(limit?: number): Promise<Product[]> {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
 
-  if (limit) query = query.limit(limit);
+  if (options.category) query = query.eq("category", options.category);
+  if (options.limit) query = query.limit(options.limit);
 
   return (await safe<Product[]>("getActiveProducts", () => query)) ?? [];
 }

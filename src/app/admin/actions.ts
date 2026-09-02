@@ -32,17 +32,23 @@ const postSchema = z.object({
   excerpt: z.string().trim().max(500).nullable(),
   content: z.string().max(200_000),
   cover_image: z.url("Cover image must be a valid URL.").nullable(),
+  category: z.string().trim().max(60).nullable(),
+  read_minutes: z.number().int().min(1).max(240).nullable(),
   tags: z.array(z.string()),
   published: z.boolean(),
 });
 
 function readPostForm(formData: FormData) {
+  const readMinutes = optionalText(formData.get("read_minutes"));
+
   return postSchema.safeParse({
     title: formData.get("title"),
     slug: optionalText(formData.get("slug")) ?? undefined,
     excerpt: optionalText(formData.get("excerpt")),
     content: String(formData.get("content") ?? ""),
     cover_image: optionalText(formData.get("cover_image")),
+    category: optionalText(formData.get("category")),
+    read_minutes: readMinutes === null ? null : Number(readMinutes),
     tags: String(formData.get("tags") ?? "")
       .split(",")
       .map((tag) => tag.trim())
@@ -128,8 +134,12 @@ const productSchema = z.object({
   summary: z.string().trim().max(500).nullable(),
   description: z.string().max(200_000),
   price_cents: z.number().int().min(0, "Price cannot be negative."),
+  price_on_request: z.boolean(),
   currency: z.string().trim().length(3).toLowerCase(),
   image_url: z.url("Image must be a valid URL.").nullable(),
+  icon: z.enum(["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"]),
+  category: z.enum(["reports", "jewelry", "crystals"]),
+  badge: z.string().trim().max(40).nullable(),
   kind: z.enum(["service", "digital", "physical"]),
   stock: z.number().int().min(0).nullable(),
   active: z.boolean(),
@@ -153,8 +163,12 @@ export async function saveProduct(
     description: String(formData.get("description") ?? ""),
     // Prices are typed in whole currency units and stored as integer cents.
     price_cents: Math.round(Number(rawPrice) * 100),
+    price_on_request: formData.get("price_on_request") === "on",
     currency: formData.get("currency") ?? "eur",
     image_url: optionalText(formData.get("image_url")),
+    icon: formData.get("icon") ?? "star",
+    category: formData.get("category") ?? "reports",
+    badge: optionalText(formData.get("badge")),
     kind: formData.get("kind") ?? "service",
     stock: rawStock === null ? null : Number(rawStock),
     active: formData.get("active") === "on",
@@ -182,6 +196,7 @@ export async function saveProduct(
 
   revalidatePath("/shop");
   revalidatePath(`/shop/${values.slug}`);
+  revalidatePath("/healing/jewelry");
   revalidatePath("/admin/products");
   redirect("/admin/products");
 }
@@ -196,6 +211,7 @@ export async function deleteProduct(formData: FormData): Promise<void> {
   await supabase.from("products").delete().eq("id", id);
 
   revalidatePath("/shop");
+  revalidatePath("/healing/jewelry");
   revalidatePath("/admin/products");
 }
 

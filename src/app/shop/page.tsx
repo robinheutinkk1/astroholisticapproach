@@ -1,40 +1,42 @@
 import type { Metadata } from "next";
+import { CtaBlock, PageHeader, Section } from "@/components/Layout";
+import { ShopGrid } from "@/components/ShopGrid";
 import { getActiveProducts } from "@/lib/queries";
-import { EmptyState, PageHeader, Section } from "@/components/ui";
-import { ProductCard } from "@/components/ProductCard";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Readings",
-  description: "Natal chart readings, solar returns, synastry and downloadable material.",
+  title: "Shop",
+  description:
+    "Healing jewelry, crystals, personalised astrology reports and Ayurveda guides from Holistic Astro Approach.",
 };
 
 export default async function ShopPage() {
   const products = await getActiveProducts();
 
   return (
-    <Section className="py-20">
+    <>
       <PageHeader
-        eyebrow="Readings"
-        title="Sessions and material"
-        intro="Every session is prepared in advance and recorded. Booking details arrive by email once payment is confirmed."
+        trail={[{ label: "Shop" }]}
+        eyebrow="Shop"
+        title='Jewelry, crystals <span class="accent">and written work</span>'
+        intro="Healing jewelry, crystals, personalised astrology reports and Ayurveda guides. Personalised pieces are made to your chart, so those are quoted on request."
       />
-
-      <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-
-      {products.length === 0 && (
-        <div className="mt-14">
-          <EmptyState
-            title="Nothing listed yet."
-            hint="Active products from the admin CMS appear here."
-          />
-        </div>
-      )}
-    </Section>
+      <Section>
+        {products.length > 0 ? (
+          <ShopGrid products={products} />
+        ) : (
+          <div className="empty-state reveal">
+            <p>Nothing is listed at the moment.</p>
+            <p>Products added in the admin area appear here.</p>
+          </div>
+        )}
+      </Section>
+      <CtaBlock
+        title="Looking for something personalised?"
+        body="Send a short message and Milan will select the stones or write the report from your own chart."
+        links={[{ href: "/contact?i=shop", label: "Send a message" }]}
+      />
+    </>
   );
 }

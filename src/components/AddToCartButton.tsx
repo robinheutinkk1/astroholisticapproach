@@ -7,7 +7,7 @@ import type { Product } from "@/lib/types";
 export function AddToCartButton({
   product,
   disabled = false,
-  className = "",
+  className = "add-to-cart",
 }: {
   product: Product;
   disabled?: boolean;
@@ -29,13 +29,8 @@ export function AddToCartButton({
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={disabled}
-      className={`rounded-full bg-gold-400 px-5 py-2.5 text-sm font-semibold text-night-950 transition-colors hover:bg-gold-300 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-mist-500 ${className}`}
-    >
-      {disabled ? "Unavailable" : added ? "Added ✓" : "Add to cart"}
+    <button type="button" onClick={handleClick} disabled={disabled} className={className}>
+      {disabled ? "Unavailable" : added ? "Added ✓" : "Add to cart →"}
     </button>
   );
 }

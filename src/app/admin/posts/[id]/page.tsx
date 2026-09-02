@@ -14,8 +14,8 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
 
   return (
     <div>
-      <h1 className="font-display text-2xl text-mist-100">Edit post</h1>
-      <div className="mt-8">
+      <h2 style={{ fontSize: "1.5rem" }}>Edit post</h2>
+      <div style={{ marginTop: 28 }}>
         <PostForm post={data as Post} />
       </div>
     </div>

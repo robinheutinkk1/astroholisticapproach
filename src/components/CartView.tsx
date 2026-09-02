@@ -18,10 +18,7 @@ export function CartView() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: lines.map((line) => ({
-            productId: line.productId,
-            quantity: line.quantity,
-          })),
+          items: lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
         }),
       });
 
@@ -39,16 +36,18 @@ export function CartView() {
   }
 
   if (!ready) {
-    return <p className="text-center text-mist-500">Loading your cart…</p>;
+    return <p className="empty-state">Loading your cart…</p>;
   }
 
   if (lines.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-white/15 px-6 py-14 text-center">
-        <p className="text-mist-200">Your cart is empty.</p>
-        <Link href="/shop" className="mt-4 inline-block text-sm font-semibold text-gold-300">
-          Browse the readings →
-        </Link>
+      <div className="empty-state">
+        <p>Your cart is empty.</p>
+        <p>
+          <Link href="/shop" style={{ color: "var(--c-gold)" }}>
+            Browse the shop →
+          </Link>
+        </p>
       </div>
     );
   }
@@ -57,19 +56,12 @@ export function CartView() {
 
   return (
     <div>
-      <ul className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-night-900/50">
+      <ul className="cart-list">
         {lines.map((line) => (
-          <li key={line.productId} className="flex flex-wrap items-center gap-4 p-5">
-            <div className="min-w-0 flex-1">
-              <Link
-                href={`/shop/${line.slug}`}
-                className="font-display text-lg text-mist-100 hover:text-gold-300"
-              >
-                {line.name}
-              </Link>
-              <p className="mt-1 text-sm text-mist-500">
-                {formatPrice(line.priceCents, line.currency)} each
-              </p>
+          <li className="cart-row" key={line.productId}>
+            <div className="cart-name">
+              <Link href={`/shop/${line.slug}`}>{line.name}</Link>
+              <span className="cart-unit">{formatPrice(line.priceCents, line.currency)} each</span>
             </div>
 
             <label className="sr-only" htmlFor={`qty-${line.productId}`}>
@@ -77,38 +69,30 @@ export function CartView() {
             </label>
             <input
               id={`qty-${line.productId}`}
+              className="cart-qty"
               type="number"
               min={1}
               max={20}
               value={line.quantity}
               onChange={(event) => setQuantity(line.productId, Number(event.target.value))}
-              className="w-20 rounded-lg border border-white/15 bg-night-950 px-3 py-2 text-center text-mist-100 focus:border-gold-400 focus:outline-none"
             />
 
-            <p className="w-24 text-right font-semibold text-mist-100">
-              {formatPrice(line.priceCents * line.quantity, line.currency)}
-            </p>
+            <span className="cart-line-total">{formatPrice(line.priceCents * line.quantity, line.currency)}</span>
 
-            <button
-              type="button"
-              onClick={() => remove(line.productId)}
-              className="text-sm text-mist-500 hover:text-red-300"
-            >
+            <button type="button" className="cart-remove" onClick={() => remove(line.productId)}>
               Remove
             </button>
           </li>
         ))}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-6">
-        <p className="text-mist-300">Subtotal</p>
-        <p className="font-display text-2xl text-gold-300">
-          {formatPrice(subtotalCents, currency)}
-        </p>
+      <div className="cart-summary">
+        <span style={{ color: "var(--c-mute)" }}>Subtotal</span>
+        <span className="amount">{formatPrice(subtotalCents, currency)}</span>
       </div>
 
       {error && (
-        <p className="mt-5 rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <p className="admin-alert" style={{ marginTop: 20 }}>
           {error}
         </p>
       )}
@@ -117,14 +101,14 @@ export function CartView() {
         type="button"
         onClick={handleCheckout}
         disabled={pending}
-        className="mt-6 w-full rounded-full bg-gold-400 px-7 py-3.5 text-sm font-semibold text-night-950 transition-colors hover:bg-gold-300 disabled:opacity-60"
+        className="btn btn-primary"
+        style={{ width: "100%", justifyContent: "center", marginTop: 24 }}
       >
         {pending ? "Redirecting to payment…" : "Checkout securely"}
+        <span className="arrow">→</span>
       </button>
 
-      <p className="mt-4 text-center text-xs text-mist-500">
-        Payment is handled by Stripe. Card details never touch this site.
-      </p>
+      <p className="cart-note">Payment is handled by Stripe. Card details never touch this site.</p>
     </div>
   );
 }
