@@ -1194,7 +1194,9 @@ footer {
 .article-body ul { list-style: disc; }
 .article-body ol { list-style: decimal; }
 .article-body li { margin-bottom: 0.4rem; }
-.article-body a { color: var(--c-gold-soft); border-bottom: 1px solid rgba(212, 175, 55, 0.35); }
+/* Prose links only. Without :not(.btn) this also repaints the buttons under
+   an article — and gold text on the gold button is unreadable. */
+.article-body a:not(.btn) { color: var(--c-gold-soft); border-bottom: 1px solid rgba(212, 175, 55, 0.35); }
 .article-body strong { color: var(--c-light); }
 .article-body blockquote {
   border-left: 2px solid var(--c-gold);
