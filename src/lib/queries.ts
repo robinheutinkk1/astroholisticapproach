@@ -66,3 +66,21 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     supabase.from("products").select("*").eq("slug", slug).eq("active", true).maybeSingle(),
   );
 }
+
+/**
+ * Other articles to show under a post. Same category first, topped up with
+ * the most recent ones so a new blog never shows an empty block.
+ */
+export async function getRelatedPosts(
+  slug: string,
+  category: string | null,
+  limit = 3,
+): Promise<Post[]> {
+  const others = (await getPublishedPosts()).filter((post) => post.slug !== slug);
+  if (!category) return others.slice(0, limit);
+
+  return [
+    ...others.filter((post) => post.category === category),
+    ...others.filter((post) => post.category !== category),
+  ].slice(0, limit);
+}
