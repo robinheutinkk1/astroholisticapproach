@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 import { saveProduct, type ActionState } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
 import { ImageField } from "@/components/admin/ImageField";
-import { MarkdownField } from "@/components/admin/MarkdownField";
+import { BlockEditor } from "@/components/admin/BlockEditor";
 
 const icons = ["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"];
 
@@ -104,11 +104,10 @@ export function ProductForm({ product }: { product?: Product }) {
         defaultValue={product?.image_url ?? ""}
       />
 
-      <MarkdownField
+      <BlockEditor
         name="description"
         label="Description"
         folder="products"
-        rows={14}
         defaultValue={product?.description ?? ""}
       />
 
