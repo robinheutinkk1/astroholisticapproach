@@ -54,5 +54,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // /forgot-password and /reset-password are deliberately absent: the reset
+  // link signs the visitor in, and a signed-in visitor is bounced off /login.
+  // Sending them to /admin at that moment would skip the password they came
+  // to set.
   matcher: ["/admin/:path*", "/login"],
 };

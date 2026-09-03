@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -62,6 +63,10 @@ export function LoginForm() {
       <button type="submit" className="btn btn-primary" disabled={pending} style={{ justifyContent: "center" }}>
         {pending ? "Signing in…" : "Sign in"}
       </button>
+
+      <p className="auth-alt">
+        <Link href="/forgot-password">Forgotten your password?</Link>
+      </p>
     </form>
   );
 }

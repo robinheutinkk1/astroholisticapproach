@@ -1373,6 +1373,31 @@ footer {
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
 
+/* ---- Sign in, forgotten password, new password ---- */
+.auth-card { max-width: 380px; margin: 0 auto; }
+.auth-card h1 { font-size: 2rem; text-align: center; }
+.auth-lead { text-align: center; color: var(--c-mute-2); font-size: 0.88rem; margin: 12px 0 28px; }
+.auth-alt { text-align: center; font-size: 0.84rem; margin-top: 18px; }
+.auth-alt a { color: var(--c-gold-soft); }
+.auth-alt a:hover { color: var(--c-gold); }
+.auth-done {
+  border: 1px solid var(--c-line);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--c-light);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 0.88rem;
+}
+.admin-done {
+  border: 1px solid rgba(120, 190, 140, 0.4);
+  background: rgba(120, 190, 140, 0.1);
+  color: #a8dcb8;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.86rem;
+}
+.field-hint { font-size: 0.76rem; color: var(--c-mute-2); margin-top: 7px; }
+
 /* ---- Block editor ----
    One labelled box per piece of the article. Everything here exists so the
    author never meets markdown: the boxes carry the structure, and the small

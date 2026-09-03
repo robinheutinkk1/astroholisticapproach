@@ -42,8 +42,9 @@ Verder: `npm run build`, `npm run typecheck`.
    npx supabase db push
    ```
 
-3. Draai daarna `supabase/migrations/0002_media_bucket.sql` en
-   `supabase/migrations/0003_site_settings.sql`.
+3. Draai daarna `supabase/migrations/0002_media_bucket.sql`,
+   `supabase/migrations/0003_site_settings.sql` en
+   `supabase/migrations/0004_admin_emails.sql`.
 4. Draai `supabase/seed.sql`. Die zet de negen producten van de site klaar en
    de zes blogtitels als **concept** (zie "Nog te doen").
 5. Kopieer uit **Project settings › API**:
@@ -51,14 +52,51 @@ Verder: `npm run build`, `npm run typecheck`.
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY` — **alleen server-side**, nooit in de browser.
 
-### Jezelf admin maken
+### Wie er in het adminpaneel mag
 
-Maak een gebruiker aan via **Authentication › Users › Add user** (e-mail +
-wachtwoord, "Auto Confirm User" aanvinken) en zet daarna de rol:
+Dat staat in de tabel `public.admin_emails`, aangelegd door migratie `0004`.
+Een adres dat daarin staat wordt automatisch admin — of het account nu al
+bestaat of pas later wordt aangemaakt. `landkroonmilan@gmail.com` staat er al
+in.
+
+Een account aanmaken: **Authentication › Users › Add user**, e-mail plus een
+tijdelijk wachtwoord, met **Auto Confirm User** aangevinkt. De rol wordt
+vanzelf gezet.
+
+Iemand later toevoegen:
 
 ```sql
-update public.profiles set role = 'admin' where email = 'landkroonmilan@gmail.com';
+insert into public.admin_emails (email, note)
+values ('nieuw@voorbeeld.nl', 'waarom deze persoon') on conflict do nothing;
+
+-- Alleen nodig als dat account al bestond:
+update public.profiles p set role = 'admin'
+  from public.admin_emails a
+ where lower(p.email) = a.email and p.role <> 'admin';
 ```
+
+Toegang weer intrekken: verwijder de regel uit `admin_emails` **en** zet de rol
+terug (`update public.profiles set role = 'customer' where email = '…'`) — het
+verwijderen alleen doet niets voor een account dat al gepromoveerd is.
+
+### Wachtwoorden
+
+Geef een nieuwe admin een tijdelijk wachtwoord en laat diegene het zelf
+vervangen onder **Your account** in het menu. Zo kent niemand anders het.
+
+Vergeten wachtwoord loopt via `/forgot-password`: link in de mail, nieuw
+wachtwoord op `/reset-password`. Twee dingen moeten daarvoor in Supabase goed
+staan, onder **Authentication › URL Configuration**:
+
+- **Site URL** — de echte domeinnaam van de site.
+- **Redirect URLs** — voeg `https://<domein>/reset-password` toe, en zolang je
+  nog op Vercel test ook de `*.vercel.app`-variant.
+
+De link is een uur geldig en moet in dezelfde browser geopend worden als waar
+hij is aangevraagd. De ingebouwde mailer van Supabase is bedoeld om te testen
+en stuurt maar een paar mails per uur; voor dagelijks gebruik zet je onder
+**Authentication › Emails** je eigen SMTP in (Resend kan dat ook, dezelfde
+account als voor het contactformulier).
 
 Inloggen op `/login`, daarna is `/admin` bereikbaar. Via het menu links:
 
@@ -71,6 +109,7 @@ Inloggen op `/login`, daarna is `/admin` bereikbaar. Via het menu links:
 | **Sessions** | De drie blokken op de sessiepagina, elk aan of uit |
 | **Orders / Messages** | Bestellingen en binnengekomen berichten |
 | **Details & socials** | E-mail, social media, KvK, IBAN, footertekst, deelafbeelding |
+| **Your account** | Je eigen wachtwoord wijzigen |
 
 Elke instelling wordt bij het opslaan gevalideerd; wat niet klopt wordt
 geweigerd met een melding in plaats van opgeslagen. Elke sectie heeft een
