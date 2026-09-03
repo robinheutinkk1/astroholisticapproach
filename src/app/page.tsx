@@ -1,7 +1,6 @@
 import { Btn, CtaBlock, Section, SectionHead } from "@/components/Layout";
 import { HeroStars } from "@/components/HeroStars";
 import { MethodSection } from "@/components/MethodSection";
-import { CourseTariffSection, TariffSection } from "@/components/Tariffs";
 import { AboutSplit } from "@/components/AboutSplit";
 import { BlogCard } from "@/components/BlogCard";
 import { getPublishedPosts } from "@/lib/queries";
@@ -96,7 +95,7 @@ export default async function HomePage() {
               <h3>{item.title}</h3>
               <p className="card-desc" dangerouslySetInnerHTML={{ __html: item.desc }} />
               <p className="card-ref">
-                See <a href="/tariffs">Method of Working &amp; Tariff structure</a> below.
+                See the <a href="/tariffs">Method of Working &amp; Tariff structure</a>.
               </p>
               <Btn href={`/contact?i=${item.interest}`} variant="secondary" arrow className="card-cta">
                 Send a request
@@ -105,9 +104,6 @@ export default async function HomePage() {
           ))}
         </div>
       </Section>
-
-      <TariffSection />
-      <CourseTariffSection />
 
       {posts.length > 0 && (
         <Section>
@@ -128,7 +124,10 @@ export default async function HomePage() {
       <CtaBlock
         title='Not sure where to <span class="accent">start</span>?'
         body="Send a short message describing what you are working with. Milan reads every email personally and replies within 24 hours with a recommendation."
-        links={[{ href: "/contact", label: "Send a message" }]}
+        links={[
+          { href: "/contact", label: "Send a message" },
+          { href: "/tariffs", label: "View tariffs" },
+        ]}
       />
     </>
   );
