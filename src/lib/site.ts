@@ -82,6 +82,7 @@ export const nav: NavItem[] = [
     ],
   },
   { href: "/feng-shui", label: "Feng Shui" },
+  { href: "/tariffs", label: "Tariffs" },
   { href: "/courses", label: "Courses" },
   { href: "/shop", label: "Shop" },
   { href: "/blog", label: "Blog" },
@@ -98,6 +99,7 @@ export const footerNav = {
     { href: "/feng-shui", label: "Feng Shui" },
   ],
   engage: [
+    { href: "/tariffs", label: "Tariffs" },
     { href: "/courses", label: "Courses" },
     { href: "/webinars", label: "Sessions" },
     { href: "/shop", label: "Shop" },
