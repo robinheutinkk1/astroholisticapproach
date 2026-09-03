@@ -7,6 +7,8 @@ import { BlogCard } from "@/components/BlogCard";
 import { getPublishedPosts } from "@/lib/queries";
 import { scarcityLabel } from "@/lib/site";
 
+export const revalidate = 300;
+
 const mostBooked = [
   {
     title: "Natal Chart Reading",

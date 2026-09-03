@@ -1150,14 +1150,26 @@ footer {
 .cart-row .cart-name a { font-family: var(--font-serif); font-size: 1.15rem; }
 .cart-row .cart-name a:hover { color: var(--c-gold); }
 .cart-row .cart-unit { display: block; font-size: 0.8rem; color: var(--c-mute-2); margin-top: 4px; }
-.cart-qty {
-  width: 76px;
-  padding: 9px 10px;
-  text-align: center;
-  color: var(--c-light);
-  background: var(--c-night);
-  border: 1px solid var(--c-line);
-  border-radius: var(--radius-sm);
+/* Minus, amount, plus. The old number field stepped down to zero and removed
+   the line, which also meant the field could not be cleared to type a new
+   number. Removing is the Remove button's job now. */
+.qty {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--c-line); border-radius: 999px;
+  background: var(--c-night); overflow: hidden;
+}
+.qty button {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  font-size: 1.1rem; line-height: 1; color: var(--c-light);
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.qty button:hover:not(:disabled) { background: rgba(212, 175, 55, 0.14); color: var(--c-gold); }
+.qty button:disabled { color: var(--c-mute-2); opacity: 0.45; cursor: not-allowed; }
+.qty-value {
+  min-width: 34px; text-align: center;
+  font-size: 0.95rem; font-weight: 600; color: var(--c-light);
+  font-variant-numeric: tabular-nums;
 }
 .cart-line-total { min-width: 90px; text-align: right; font-weight: 600; }
 .cart-remove { font-size: 0.8rem; color: var(--c-mute-2); }

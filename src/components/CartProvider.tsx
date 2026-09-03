@@ -23,6 +23,7 @@ type CartContextValue = {
 };
 
 const STORAGE_KEY = "haa.cart.v1";
+export const MAX_PER_LINE = 20;
 const CartContext = createContext<CartContextValue | null>(null);
 
 function parse(raw: string | null): CartLine[] {
@@ -63,18 +64,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = current.find((l) => l.productId === line.productId);
       if (existing) {
         return current.map((l) =>
-          l.productId === line.productId ? { ...l, quantity: l.quantity + quantity } : l,
+          l.productId === line.productId
+            ? { ...l, quantity: Math.min(MAX_PER_LINE, l.quantity + quantity) }
+            : l,
         );
       }
       return [...current, { ...line, quantity }];
     });
   }, []);
 
+  /**
+   * Changing the amount never removes a line — that is what remove() is for.
+   * Stepping down from one, or clearing the field to type a new number, used
+   * to delete the item from under the shopper.
+   */
   const setQuantity = useCallback((productId: string, quantity: number) => {
+    const next = Math.min(MAX_PER_LINE, Math.max(1, Math.round(quantity) || 1));
     setLines((current) =>
-      quantity <= 0
-        ? current.filter((l) => l.productId !== productId)
-        : current.map((l) => (l.productId === productId ? { ...l, quantity } : l)),
+      current.map((l) => (l.productId === productId ? { ...l, quantity: next } : l)),
     );
   }, []);
 

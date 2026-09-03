@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useCart } from "@/components/CartProvider";
+import { MAX_PER_LINE, useCart } from "@/components/CartProvider";
 import { formatPrice } from "@/lib/format";
 
 export function CartView() {
@@ -64,18 +64,27 @@ export function CartView() {
               <span className="cart-unit">{formatPrice(line.priceCents, line.currency)} each</span>
             </div>
 
-            <label className="sr-only" htmlFor={`qty-${line.productId}`}>
-              Quantity for {line.name}
-            </label>
-            <input
-              id={`qty-${line.productId}`}
-              className="cart-qty"
-              type="number"
-              min={1}
-              max={20}
-              value={line.quantity}
-              onChange={(event) => setQuantity(line.productId, Number(event.target.value))}
-            />
+            <div className="qty" role="group" aria-label={`Quantity for ${line.name}`}>
+              <button
+                type="button"
+                onClick={() => setQuantity(line.productId, line.quantity - 1)}
+                disabled={line.quantity <= 1}
+                aria-label={`One fewer ${line.name}`}
+              >
+                −
+              </button>
+              <span className="qty-value" aria-live="polite">
+                {line.quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuantity(line.productId, line.quantity + 1)}
+                disabled={line.quantity >= MAX_PER_LINE}
+                aria-label={`One more ${line.name}`}
+              >
+                +
+              </button>
+            </div>
 
             <span className="cart-line-total">{formatPrice(line.priceCents * line.quantity, line.currency)}</span>
 
