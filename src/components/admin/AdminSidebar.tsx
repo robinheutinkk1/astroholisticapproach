@@ -23,7 +23,10 @@ const groups = [
   },
   {
     label: "Site",
-    items: [{ href: "/admin/site", label: "Details & socials" }],
+    items: [
+      { href: "/admin/site", label: "Details & socials" },
+      { href: "/admin/account", label: "Your account" },
+    ],
   },
 ];
 
