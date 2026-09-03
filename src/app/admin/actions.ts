@@ -93,8 +93,11 @@ export async function savePost(
     };
   }
 
-  revalidatePath("/blog");
-  revalidatePath(`/blog/${values.slug}`);
+  // "layout" reaches the index and every article, so the further-reading
+  // blocks pick up the new post too. The home page carries the three most
+  // recent, so it needs saying as well.
+  revalidatePath("/blog", "layout");
+  revalidatePath("/");
   revalidatePath("/admin/posts");
   redirect("/admin/posts");
 }
@@ -121,7 +124,8 @@ export async function deletePost(formData: FormData): Promise<void> {
   const supabase = createSupabaseAdminClient();
   await supabase.from("posts").delete().eq("id", id);
 
-  revalidatePath("/blog");
+  revalidatePath("/blog", "layout");
+  revalidatePath("/");
   revalidatePath("/admin/posts");
 }
 
