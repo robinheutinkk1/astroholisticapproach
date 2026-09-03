@@ -1222,7 +1222,74 @@ footer {
   color: var(--c-mute);
 }
 .article-body img { border-radius: var(--radius); margin: 1.6rem 0; }
-.article-meta { display: flex; gap: 14px; font-size: 0.78rem; color: var(--c-mute-2); text-transform: uppercase; letter-spacing: 0.12em; }
+.article-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.78rem; color: var(--c-mute-2); text-transform: uppercase; letter-spacing: 0.12em; }
+
+/* ---- Article body: content we do not write ----
+   Everything above styles markup we control. The article body is the one place
+   on the site where the HTML comes from whatever is typed into the CMS, so it
+   also has to survive the things markdown can produce that do not fit a phone:
+   a pasted link, a table, a code block, an embedded video. Without these rules
+   any one of them makes the whole page scroll sideways. */
+
+/* A pasted URL is one unbreakable "word" hundreds of pixels long. break-word
+   only breaks where the line would otherwise overflow, so ordinary prose still
+   wraps between words. */
+.article-body { overflow-wrap: break-word; }
+
+/* Tables cannot reflow, so squeezing one into 350px only makes it unreadable.
+   renderMarkdown() puts each table in .table-scroll; min-width keeps the
+   columns legible and hands the overflow to that container instead of the page. */
+/* The border makes the clipped edge read as "there is more inside this box"
+   rather than as a table that got cut off. */
+.table-scroll { overflow-x: auto; margin: 0 0 1.15rem; border: 1px solid var(--c-line-soft); border-radius: var(--radius-sm); }
+.article-body table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: 0.92rem; }
+.article-body tr:last-child th,
+.article-body tr:last-child td { border-bottom: 0; }
+.article-body th,
+.article-body td { padding: 10px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--c-line-soft); }
+.article-body th { color: var(--c-light); font-weight: 600; white-space: nowrap; border-bottom-color: var(--c-line); }
+.article-body td { color: var(--c-mute); }
+
+/* Code kept its own line breaks, so it scrolls rather than wraps. */
+.article-body pre {
+  overflow-x: auto;
+  margin-bottom: 1.15rem;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius-sm);
+}
+.article-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  color: var(--c-gold-soft);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--c-line);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.article-body pre code { background: none; border: 0; padding: 0; white-space: pre; overflow-wrap: normal; }
+
+/* An embed carries its own width="800" attribute; the width here overrides it.
+   Only known video hosts get a forced ratio — a map or a player is not 16:9. */
+.article-body iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.6rem 0;
+  border: 0;
+  border-radius: var(--radius);
+}
+.article-body iframe[src*="youtube"],
+.article-body iframe[src*="youtu.be"],
+.article-body iframe[src*="vimeo"] { aspect-ratio: 16 / 9; height: auto; }
+
+.article-body hr { border: 0; border-top: 1px solid var(--c-line-soft); margin: 2.4rem 0; }
+
+/* Titles and breadcrumbs are CMS text too, so one long word must not widen the
+   header the way it would widen the body. */
+.page-header h1,
+.breadcrumb { overflow-wrap: break-word; }
 
 /* ---- Admin ---- */
 .admin-shell { max-width: 1100px; margin: 0 auto; padding: 48px clamp(20px, 4vw, 40px) 90px; }
@@ -1305,6 +1372,121 @@ footer {
 }
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
+
+/* ---- Block editor ----
+   One labelled box per piece of the article. Everything here exists so the
+   author never meets markdown: the boxes carry the structure, and the small
+   toolbar over a text box carries the three things that have to live inside a
+   sentence. What gets saved is still markdown, from a hidden field. */
+
+.block-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.block-bar .admin-ghost { padding: 7px 14px; font-size: 0.8rem; }
+.block-intro { font-size: 0.82rem; color: var(--c-mute-2); margin: 0 0 14px; }
+/* The preview renders through the site's own renderer and .article-body, so
+   what is shown is the article, not an approximation of it. */
+.block-preview {
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--c-night);
+  padding: clamp(18px, 4vw, 32px);
+}
+.block-preview .article-body { max-width: none; }
+.block-list { display: grid; gap: 14px; }
+.block-empty {
+  border: 1px dashed var(--c-line-soft);
+  border-radius: var(--radius-sm);
+  padding: 22px;
+  text-align: center;
+  color: var(--c-mute-2);
+  font-size: 0.86rem;
+}
+
+.block {
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.16);
+  padding: 12px 14px 14px;
+}
+.block:focus-within { border-color: var(--c-gold-dim); }
+.block-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.block-kind {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-gold-soft);
+}
+.block-tools { display: flex; gap: 4px; }
+.block-tools button,
+.block-remove {
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--c-mute-2);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.block-tools button:hover:not(:disabled) { color: var(--c-gold); border-color: var(--c-line); }
+.block-tools button:disabled { opacity: 0.25; cursor: default; }
+.block-remove:hover { color: #e06868; border-color: rgba(224, 104, 104, 0.4); }
+
+/* The form styles below target .admin-form's own children, so the fields
+   nested inside a block need them restated. */
+.block input[type="text"],
+.block textarea {
+  width: 100%;
+  background: var(--c-night);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: var(--c-light);
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+.block textarea { resize: vertical; line-height: 1.6; }
+.block input[type="text"]:focus,
+.block textarea:focus { outline: none; border-color: var(--c-gold-dim); }
+.block ::placeholder { color: rgba(245, 245, 245, 0.28); }
+
+.block-format { display: flex; gap: 4px; margin-bottom: 8px; }
+.block-format button {
+  min-width: 32px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--c-line-soft);
+  border-radius: 6px;
+  background: none;
+  color: var(--c-mute);
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+.block-format button:hover { color: var(--c-gold); border-color: var(--c-gold-dim); }
+
+.block-items { display: grid; gap: 8px; }
+.block-item { display: flex; align-items: center; gap: 10px; }
+.block-bullet { width: 20px; flex-shrink: 0; text-align: right; color: var(--c-mute-2); font-size: 0.85rem; }
+.block-item input[type="text"] { flex: 1; min-width: 0; }
+.block-add-item { justify-self: start; margin-left: 30px; }
+
+.block-sub { font-size: 0.76rem; color: var(--c-mute-2); margin: 10px 0 6px; display: block; }
+.block-warn { font-size: 0.76rem; color: #f0c07a; margin: 10px 0 0; }
+.block-note { font-size: 0.78rem; color: var(--c-mute-2); margin: 0 0 8px; }
+
+.block-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.block-add-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-mute-2);
+  margin-right: 4px;
+}
+.block-add .admin-ghost { padding: 8px 14px; font-size: 0.82rem; }
+
+@media (max-width: 620px) {
+  .block-add-item { margin-left: 0; }
+}
 
 /* ---- Cards carrying a single link are clickable as a whole ---- */
 /* Same treatment as the blog cards: the one call to action is stretched over
