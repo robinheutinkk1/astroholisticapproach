@@ -24,7 +24,11 @@ export default async function ContactPage() {
       />
 
       <Section>
-        <div className="split">
+        <div className="split split-form">
+          <Suspense fallback={null}>
+            <ContactForm />
+          </Suspense>
+
           <div className="reveal">
             <h2>Direct contact</h2>
             <p style={{ color: "var(--c-mute)", margin: "16px 0 28px" }}>
@@ -51,10 +55,6 @@ export default async function ContactPage() {
               </p>
             </InfoBox>
           </div>
-
-          <Suspense fallback={null}>
-            <ContactForm />
-          </Suspense>
         </div>
       </Section>
 

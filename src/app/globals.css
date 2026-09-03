@@ -1475,3 +1475,13 @@ footer {
   color: var(--c-gold);
   margin: 4px 0 18px;
 }
+
+/* ---- Contact page: the form leads ---- */
+/* The form comes first in the markup so a phone shows it before the details
+   instead of below them. On a wide screen that puts it on the left, where it
+   also wants the roomier column — .split gives its wider half to the right,
+   so this variant flips the ratio. Below the breakpoint .split already
+   collapses to one column, so this only applies above it. */
+@media (min-width: 901px) {
+  .split-form { grid-template-columns: 1fr 0.85fr; align-items: start; }
+}
