@@ -6,6 +6,7 @@ import { useFormStatus } from "react-dom";
 import { savePost, type ActionState } from "@/app/admin/actions";
 import type { Post } from "@/lib/types";
 import { ImageField } from "@/components/admin/ImageField";
+import { MarkdownField } from "@/components/admin/MarkdownField";
 
 export function PostForm({ post }: { post?: Post }) {
   const action = savePost.bind(null, post?.id ?? null);
@@ -51,10 +52,7 @@ export function PostForm({ post }: { post?: Post }) {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="content">Content — markdown</label>
-        <textarea id="content" name="content" rows={22} className="mono" defaultValue={post?.content ?? ""} />
-      </div>
+      <MarkdownField name="content" label="Content" folder="posts" defaultValue={post?.content ?? ""} />
 
       <label className="admin-check">
         <input type="checkbox" name="published" defaultChecked={post?.published ?? false} />

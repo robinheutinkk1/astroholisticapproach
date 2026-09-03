@@ -6,6 +6,7 @@ import { useFormStatus } from "react-dom";
 import { saveProduct, type ActionState } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
 import { ImageField } from "@/components/admin/ImageField";
+import { MarkdownField } from "@/components/admin/MarkdownField";
 
 const icons = ["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"];
 
@@ -103,10 +104,13 @@ export function ProductForm({ product }: { product?: Product }) {
         defaultValue={product?.image_url ?? ""}
       />
 
-      <div>
-        <label htmlFor="description">Description — markdown</label>
-        <textarea id="description" name="description" rows={14} className="mono" defaultValue={product?.description ?? ""} />
-      </div>
+      <MarkdownField
+        name="description"
+        label="Description"
+        folder="products"
+        rows={14}
+        defaultValue={product?.description ?? ""}
+      />
 
       <label className="admin-check">
         <input type="checkbox" name="active" defaultChecked={product?.active ?? true} />

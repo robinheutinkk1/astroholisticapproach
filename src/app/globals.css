@@ -1373,6 +1373,45 @@ footer {
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
 
+/* ---- Editor cheat sheet ----
+   Folded away by default: it is there for the moment someone forgets the
+   syntax, not as something to read past on every edit. */
+.admin-help {
+  margin-top: 12px;
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.18);
+  font-size: 0.84rem;
+  color: var(--c-mute);
+}
+.admin-help summary {
+  cursor: pointer;
+  padding: 11px 16px;
+  color: var(--c-gold-soft);
+  list-style: none;
+}
+.admin-help summary::-webkit-details-marker { display: none; }
+.admin-help summary::before { content: "+ "; }
+.admin-help[open] summary::before { content: "− "; }
+.admin-help[open] summary { border-bottom: 1px solid var(--c-line-soft); }
+.admin-help > p { padding: 14px 16px 0; margin: 0; }
+.admin-help > p:last-child { padding-bottom: 16px; }
+.admin-help-list { padding: 14px 16px 4px; margin: 0; display: grid; gap: 10px; }
+.admin-help-list > div { display: grid; grid-template-columns: 1fr 1.15fr; gap: 16px; align-items: baseline; }
+.admin-help-list dt { color: var(--c-mute-2); }
+.admin-help-list dd.note { font-family: inherit; font-size: 0.84rem; color: var(--c-mute); font-style: italic; }
+.admin-help-list dd {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--c-light);
+  white-space: pre-line;
+  overflow-wrap: break-word;
+}
+@media (max-width: 620px) {
+  .admin-help-list > div { grid-template-columns: 1fr; gap: 3px; }
+}
+
 /* ---- Cards carrying a single link are clickable as a whole ---- */
 /* Same treatment as the blog cards: the one call to action is stretched over
    the card, so the hover lift is not a promise the card fails to keep. Only
