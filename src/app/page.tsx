@@ -4,25 +4,38 @@ import { MethodSection } from "@/components/MethodSection";
 import { AboutSplit } from "@/components/AboutSplit";
 import { BlogCard } from "@/components/BlogCard";
 import { getPublishedPosts } from "@/lib/queries";
+import { getSettings, type Settings } from "@/lib/settings";
 import { scarcityLabel } from "@/lib/site";
 
 export const revalidate = 300;
 
-const mostBooked = [
+/**
+ * The price shown is the entry rate for that session on the tariff page, read
+ * from the CMS so the card cannot drift away from the real amount.
+ */
+const mostBooked: {
+  title: string;
+  desc: string;
+  interest: string;
+  price: (t: Settings["tariffs"]) => string;
+}[] = [
   {
     title: "Natal Chart Reading",
     desc: "Personalized insights to support self-awareness and personal growth.",
     interest: "natal",
+    price: (t) => t.astrology.reading,
   },
   {
     title: "Tarot Card Reading",
     desc: "To provide insight, guidance and self-reflection on life&#39;s questions and experiences.",
     interest: "cards",
+    price: (t) => t.cards.firstHour,
   },
   {
     title: "Ayurvedic Diet Advice",
     desc: "To provide insight and advice on your unique mind-body constitution, and self-reflection on life&#39;s questions and experiences.",
     interest: "ayurveda",
+    price: (t) => t.ayurveda.consult30,
   },
 ];
 
@@ -30,6 +43,7 @@ export default async function HomePage() {
   // Three most recent articles. The block stays away until something is
   // published, so the page never shows an empty shelf.
   const posts = await getPublishedPosts(3);
+  const tariffs = (await getSettings()).tariffs;
 
   return (
     <>
@@ -91,12 +105,10 @@ export default async function HomePage() {
         <SectionHead eyebrow="Most booked" plain title='Where to <span class="accent">start</span>' />
         <div className="grid-3">
           {mostBooked.map((item) => (
-            <article className="card reveal" key={item.title}>
+            <article className="card reveal is-linked" key={item.title}>
               <h3>{item.title}</h3>
               <p className="card-desc" dangerouslySetInnerHTML={{ __html: item.desc }} />
-              <p className="card-ref">
-                See the <a href="/tariffs">Method of Working &amp; Tariff structure</a>.
-              </p>
+              <p className="card-price">from {item.price(tariffs)}</p>
               <Btn href={`/contact?i=${item.interest}`} variant="secondary" arrow className="card-cta">
                 Send a request
               </Btn>

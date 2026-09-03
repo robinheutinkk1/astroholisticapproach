@@ -1466,3 +1466,12 @@ footer {
   .logo-mark { width: 28px; height: 28px; }
   .nav-cart { padding: 7px 10px; gap: 6px; }
 }
+
+/* Entry price on the "where to start" cards, in place of the old link to the
+   tariff section that used to sit below them. */
+.card-price {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--c-gold);
+  margin: 4px 0 18px;
+}
