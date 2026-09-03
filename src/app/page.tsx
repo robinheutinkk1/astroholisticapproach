@@ -3,6 +3,8 @@ import { HeroStars } from "@/components/HeroStars";
 import { MethodSection } from "@/components/MethodSection";
 import { CourseTariffSection, TariffSection } from "@/components/Tariffs";
 import { AboutSplit } from "@/components/AboutSplit";
+import { BlogCard } from "@/components/BlogCard";
+import { getPublishedPosts } from "@/lib/queries";
 import { scarcityLabel } from "@/lib/site";
 
 const mostBooked = [
@@ -23,7 +25,11 @@ const mostBooked = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Three most recent articles. The block stays away until something is
+  // published, so the page never shows an empty shelf.
+  const posts = await getPublishedPosts(3);
+
   return (
     <>
       <section className="hero">
@@ -50,8 +56,8 @@ export default function HomePage() {
               <Btn href="/contact" arrow>
                 Book a reading
               </Btn>
-              <Btn href="/tariffs" variant="secondary">
-                See the tariffs
+              <Btn href="/shop" variant="secondary">
+                Visit the shop
               </Btn>
             </div>
           </div>
@@ -100,6 +106,22 @@ export default function HomePage() {
 
       <TariffSection />
       <CourseTariffSection />
+
+      {posts.length > 0 && (
+        <Section>
+          <SectionHead eyebrow="Journal" plain title='From <span class="accent">the journal</span>' />
+          <div className="grid-3">
+            {posts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 34 }}>
+            <Btn href="/blog" variant="secondary" arrow>
+              Read the journal
+            </Btn>
+          </div>
+        </Section>
+      )}
 
       <CtaBlock
         title='Not sure where to <span class="accent">start</span>?'
