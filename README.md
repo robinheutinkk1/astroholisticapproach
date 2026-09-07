@@ -2,7 +2,8 @@
 
 De website van **holisticastroapproach.com** (Milan Landkroon, Amsterdam),
 omgezet van HighLevel naar een eigen stack: **Next.js op Vercel** met
-**Supabase** als database en **Stripe** voor betalingen.
+**Supabase** als database. Stripe zit erin maar staat uit: de shop werkt met
+reserveringen die Milan eerst beoordeelt (zie hieronder).
 
 De hele bestaande site is meeverhuisd — dezelfde teksten, dezelfde
 vormgeving (nachtblauw/goud, Cormorant Garamond + Manrope), dezelfde
@@ -11,7 +12,7 @@ paginastructuur. Drie dingen zijn nieuw of anders:
 | Onderdeel | Op HighLevel | Nu |
 | --- | --- | --- |
 | **Blog** | "Under construction" | Werkend, met eigen CMS op `/admin` |
-| **Shop** | "Under construction" | Werkend, met winkelmandje en Stripe-checkout |
+| **Shop** | "Under construction" | Werkend: winkelmandje → reservering die Milan eerst beoordeelt |
 | **Contactformulier** | Webhook naar HighLevel (`leadconnectorhq.com`) | Opslag in je eigen Supabase-database + notificatiemail |
 
 Verder: echte URL's in plaats van hash-routes (`/astrology/vedic` in plaats
@@ -44,8 +45,9 @@ Verder: `npm run build`, `npm run typecheck`.
 
 3. Draai daarna `supabase/migrations/0002_media_bucket.sql`,
    `supabase/migrations/0003_site_settings.sql`,
-   `supabase/migrations/0004_admin_emails.sql` en
-   `supabase/migrations/0005_product_images.sql`.
+   `supabase/migrations/0004_admin_emails.sql`,
+   `supabase/migrations/0005_product_images.sql` en
+   `supabase/migrations/0006_reservations.sql`.
 4. Draai `supabase/seed.sql`. Die zet de negen producten van de site klaar en
    de zes blogtitels als **concept** (zie "Nog te doen").
 5. Kopieer uit **Project settings › API**:
@@ -108,7 +110,7 @@ Inloggen op `/login`, daarna is `/admin` bereikbaar. Via het menu links:
 | **Tariffs** | Alle 29 bedragen die op de site staan |
 | **FAQ** | Vragen onder het contactformulier, toevoegen en volgorde |
 | **Sessions** | De drie blokken op de sessiepagina, elk aan of uit |
-| **Orders / Messages** | Bestellingen en binnengekomen berichten |
+| **Reservations / Messages** | Reserveringen uit de shop (bevestigen houdt voorraad vast, annuleren geeft hem vrij) en binnengekomen berichten |
 | **Details & socials** | E-mail, social media, KvK, IBAN, footertekst, deelafbeelding |
 | **Your account** | Je eigen wachtwoord wijzigen |
 
@@ -134,7 +136,19 @@ vanuit server-code, nooit vanuit de browser.
 
 ---
 
-## 3. Stripe
+## 3. Stripe (staat uit)
+
+De shop rekent **niet** af op de site. Wat er in het winkelmandje zit gaat als
+reservering naar Milan: naam, e-mail, eventueel telefoon en een opmerking. Hij
+ziet het onder **Reservations** in het adminpaneel, krijgt er een mail van
+(zodra Resend is ingesteld, zie hoofdstuk 5) en regelt de betaling zelf per
+mail. Status **Confirmed** houdt de voorraad vast, **Cancelled** geeft hem weer
+vrij — dat gebeurt in één databasetransactie, dus dubbelklikken kan geen kwaad.
+
+De Stripe-code hieronder blijft staan zodat "direct betalen" later terug kan
+zonder herbouw. Zolang die niet gebruikt wordt hoef je hier niets in te
+stellen.
+
 
 1. Pak je **secret key** uit Stripe → `STRIPE_SECRET_KEY`.
 2. Voeg een webhook toe op `https://<domein>/api/webhooks/stripe` met de events
@@ -223,6 +237,7 @@ supabase/
   migrations/0003_site_settings.sql instellingen die via /admin te wijzigen zijn
   migrations/0004_admin_emails.sql  wie er in /admin mag
   migrations/0005_product_images.sql tot drie foto's per product
+  migrations/0006_reservations.sql  shop reserveert in plaats van afrekenen; voorraad volgt de status
   seed.sql                     de negen producten + zes blogtitels als concept
 public/                    de zodiakcirkel en de portretfoto
 ```

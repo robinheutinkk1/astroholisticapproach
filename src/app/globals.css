@@ -1206,6 +1206,29 @@ footer {
 }
 .cart-summary .amount { font-family: var(--font-serif); font-size: 1.9rem; color: var(--c-gold); }
 .cart-note { text-align: center; font-size: 0.78rem; color: var(--c-mute-2); margin-top: 16px; }
+/* The reservation form sits under the cart total, so it needs a breath of
+   space and no second card border of its own. */
+.reserve-form { margin-top: 32px; }
+
+/* ---- Reservations (admin) ---- */
+.order-pill {
+  display: inline-block; padding: 4px 11px; border-radius: 999px;
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  border: 1px solid var(--c-line-soft); color: var(--c-mute-2);
+}
+.order-pill.status-requested { color: var(--c-gold); border-color: transparent; background: rgba(212, 175, 55, 0.16); }
+.order-pill.status-confirmed { color: #a8dcb8; border-color: transparent; background: rgba(120, 190, 140, 0.14); }
+.order-pill.status-fulfilled { color: var(--c-mute); }
+.order-pill.status-cancelled { color: var(--c-mute-2); text-decoration: line-through; }
+.order-contact { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.86rem; color: var(--c-mute); margin-top: 4px; }
+.order-contact a { color: var(--c-gold-soft); }
+.order-contact a:hover { color: var(--c-gold); }
+.order-note {
+  margin-top: 14px; padding: 12px 14px; font-size: 0.88rem; color: var(--c-mute);
+  border-left: 2px solid var(--c-gold-dim); background: rgba(0, 0, 0, 0.16); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  white-space: pre-line;
+}
+.order-note span { display: block; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-mute-2); margin-bottom: 4px; }
 
 /* ---- Empty states ---- */
 .empty-state {

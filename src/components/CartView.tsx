@@ -1,38 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { MAX_PER_LINE, useCart } from "@/components/CartProvider";
+import { submitReservation, type ReserveState } from "@/app/actions/reserve";
 import { formatPrice } from "@/lib/format";
 
+const initialState: ReserveState = { status: "idle" };
+
 export function CartView() {
-  const { lines, subtotalCents, setQuantity, remove, ready } = useCart();
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const { lines, subtotalCents, setQuantity, remove, clear, ready } = useCart();
+  const [state, formAction] = useActionState(submitReservation, initialState);
 
-  async function handleCheckout() {
-    setPending(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
-        }),
-      });
+  // Once the reservation is stored, the cart has done its job.
+  useEffect(() => {
+    if (state.status === "success") clear();
+  }, [state.status, clear]);
 
-      const payload = (await response.json()) as { url?: string; error?: string };
-      if (!response.ok || !payload.url) {
-        setError(payload.error ?? "Could not start checkout. Please try again.");
-        setPending(false);
-        return;
-      }
-      window.location.href = payload.url;
-    } catch {
-      setError("Could not reach the payment provider. Please try again.");
-      setPending(false);
-    }
+  if (state.status === "success") {
+    return (
+      <div className="form-success is-visible" role="status" aria-live="polite">
+        <span className="check" aria-hidden="true">
+          ✓
+        </span>
+        <span className="msg">
+          Thank you — your reservation has reached Milan. He looks at every request personally and will e-mail
+          you within 24 hours to confirm and arrange payment. Nothing has been charged.
+        </span>
+      </div>
+    );
   }
 
   if (!ready) {
@@ -100,24 +97,76 @@ export function CartView() {
         <span className="amount">{formatPrice(subtotalCents, currency)}</span>
       </div>
 
-      {error && (
-        <p className="admin-alert" style={{ marginTop: 20 }}>
-          {error}
-        </p>
-      )}
+      <form action={formAction} className="form reserve-form">
+        <div className="form-head">
+          <h3>Reserve these pieces</h3>
+          <p>
+            Nothing is paid here. Milan checks every reservation himself and e-mails you to confirm and arrange
+            payment.
+          </p>
+        </div>
 
-      <button
-        type="button"
-        onClick={handleCheckout}
-        disabled={pending}
-        className="btn btn-primary"
-        style={{ width: "100%", justifyContent: "center", marginTop: 24 }}
-      >
-        {pending ? "Redirecting to payment…" : "Checkout securely"}
-        <span className="arrow">→</span>
-      </button>
+        {/* The cart travels as product ids and quantities only; the server
+            re-reads prices and stock. */}
+        <input
+          type="hidden"
+          name="items"
+          value={JSON.stringify(lines.map((line) => ({ productId: line.productId, quantity: line.quantity })))}
+          readOnly
+        />
 
-      <p className="cart-note">Payment is handled by Stripe. Card details never touch this site.</p>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="name">Your name</label>
+            <input type="text" id="name" name="name" autoComplete="name" required minLength={2} placeholder="First and last name" />
+            <FieldError message={state.fieldErrors?.name} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" name="email" autoComplete="email" inputMode="email" required placeholder="you@example.com" />
+            <FieldError message={state.fieldErrors?.email} />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="phone">Phone — optional</label>
+          <input type="tel" id="phone" name="phone" autoComplete="tel" inputMode="tel" placeholder="If you would rather be called" />
+          <FieldError message={state.fieldErrors?.phone} />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="note">Anything Milan should know — optional</label>
+          <textarea id="note" name="note" rows={3} placeholder="A question, a wish for a particular stone, a delivery address…" />
+          <FieldError message={state.fieldErrors?.note} />
+        </div>
+
+        {/* Honeypot — hidden from people, tempting to bots. */}
+        <div aria-hidden="true" style={{ position: "absolute", left: -9999 }}>
+          <label htmlFor="website">Leave this field empty</label>
+          <input id="website" name="website" tabIndex={-1} autoComplete="off" />
+        </div>
+
+        {state.status === "error" && state.message && <p className="form-error is-visible">{state.message}</p>}
+
+        <ReserveButton />
+
+        <p className="cart-note">You will hear from Milan personally. No payment details are asked for on this site.</p>
+      </form>
     </div>
+  );
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <span className="form-error is-visible">{message}</span>;
+}
+
+function ReserveButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" className="btn btn-primary" disabled={pending} style={{ width: "100%", justifyContent: "center" }}>
+      {pending ? "Sending…" : "Send reservation"}
+      <span className="arrow">→</span>
+    </button>
   );
 }

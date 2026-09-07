@@ -38,7 +38,11 @@ export type Product = {
   updated_at: string;
 };
 
-export type OrderStatus = "pending" | "paid" | "fulfilled" | "cancelled";
+/**
+ * requested/confirmed are reservations (no payment on the site); pending/paid
+ * belong to the Stripe path, kept so it can return without a migration.
+ */
+export type OrderStatus = "requested" | "confirmed" | "pending" | "paid" | "fulfilled" | "cancelled";
 
 export type Order = {
   id: string;
@@ -46,6 +50,8 @@ export type Order = {
   stripe_payment_intent_id: string | null;
   email: string | null;
   customer_name: string | null;
+  phone: string | null;
+  note: string | null;
   status: OrderStatus;
   amount_cents: number;
   currency: string;

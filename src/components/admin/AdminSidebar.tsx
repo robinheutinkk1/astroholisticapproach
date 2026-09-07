@@ -17,7 +17,7 @@ const groups = [
   {
     label: "Inbox",
     items: [
-      { href: "/admin/orders", label: "Orders" },
+      { href: "/admin/orders", label: "Reservations" },
       { href: "/admin/messages", label: "Messages" },
     ],
   },
