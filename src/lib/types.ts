@@ -25,7 +25,8 @@ export type Product = {
   price_cents: number;
   price_on_request: boolean;
   currency: string;
-  image_url: string | null;
+  /** Up to MAX_PRODUCT_IMAGES photos; the first is the main one. */
+  images: string[];
   icon: string;
   category: string;
   badge: string | null;

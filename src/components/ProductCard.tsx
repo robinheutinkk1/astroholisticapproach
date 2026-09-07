@@ -11,11 +11,11 @@ export function ProductCard({ product }: { product: Product }) {
     <article className="product-card reveal" data-cat={product.category}>
       <div className="product-img">
         {product.badge && <span className="product-tag">{product.badge}</span>}
-        {product.image_url ? (
+        {product.images[0] ? (
           // Author-supplied URL, so a plain img keeps the remote-image
           // allowlist from having to cover every host Milan might use.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image_url} alt="" />
+          <img src={product.images[0]} alt="" />
         ) : (
           <ProductIcon name={product.icon} />
         )}

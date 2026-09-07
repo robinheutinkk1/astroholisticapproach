@@ -1,6 +1,6 @@
 /**
  * The drawn marks the original site used in place of product photography.
- * A product with an `image_url` shows that instead; anything else falls back
+ * A product with photos shows those instead; anything else falls back
  * to the mark named by its `icon` column.
  */
 const icons: Record<string, React.ReactNode> = {

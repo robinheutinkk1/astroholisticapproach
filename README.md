@@ -43,8 +43,9 @@ Verder: `npm run build`, `npm run typecheck`.
    ```
 
 3. Draai daarna `supabase/migrations/0002_media_bucket.sql`,
-   `supabase/migrations/0003_site_settings.sql` en
-   `supabase/migrations/0004_admin_emails.sql`.
+   `supabase/migrations/0003_site_settings.sql`,
+   `supabase/migrations/0004_admin_emails.sql` en
+   `supabase/migrations/0005_product_images.sql`.
 4. Draai `supabase/seed.sql`. Die zet de negen producten van de site klaar en
    de zes blogtitels als **concept** (zie "Nog te doen").
 5. Kopieer uit **Project settings › API**:
@@ -103,7 +104,7 @@ Inloggen op `/login`, daarna is `/admin` bereikbaar. Via het menu links:
 | Sectie | Wat Milan daar kan |
 | --- | --- |
 | **Blog** | Artikelen schrijven, foto uploaden, publiceren |
-| **Shop** | Producten, prijzen, voorraad, foto's |
+| **Shop** | Producten, prijzen, voorraad, tot drie foto's per product (de eerste is de hoofdfoto) |
 | **Tariffs** | Alle 29 bedragen die op de site staan |
 | **FAQ** | Vragen onder het contactformulier, toevoegen en volgorde |
 | **Sessions** | De drie blokken op de sessiepagina, elk aan of uit |
@@ -220,6 +221,8 @@ supabase/
   migrations/0001_init.sql     schema en RLS-policies
   migrations/0002_media_bucket.sql  opslag voor geüploade afbeeldingen
   migrations/0003_site_settings.sql instellingen die via /admin te wijzigen zijn
+  migrations/0004_admin_emails.sql  wie er in /admin mag
+  migrations/0005_product_images.sql tot drie foto's per product
   seed.sql                     de negen producten + zes blogtitels als concept
 public/                    de zodiakcirkel en de portretfoto
 ```

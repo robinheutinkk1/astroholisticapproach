@@ -5,6 +5,7 @@ import { getActiveProducts, getProductBySlug } from "@/lib/queries";
 import { renderMarkdown } from "@/lib/markdown";
 import { formatPrice } from "@/lib/format";
 import { ProductIcon } from "@/components/ProductIcon";
+import { ProductGallery } from "@/components/ProductGallery";
 import { AddToCartButton } from "@/components/AddToCartButton";
 
 export const revalidate = 300;
@@ -21,7 +22,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Not found" };
 
-  return { title: product.name, description: product.summary ?? undefined };
+  return {
+    title: product.name,
+    description: product.summary ?? undefined,
+    // The main photo on a shared link; without one the site-wide image from
+    // the root layout applies.
+    ...(product.images[0] && { openGraph: { images: [product.images[0]] } }),
+  };
 }
 
 export default async function ProductPage({ params }: Params) {
@@ -42,16 +49,17 @@ export default async function ProductPage({ params }: Params) {
       />
       <Section>
         <div className="split">
-          <div className="split-img reveal" style={{ display: "grid", placeItems: "center", padding: 40 }}>
-            {product.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.image_url} alt="" />
-            ) : (
+          {product.images.length > 0 ? (
+            <div className="reveal">
+              <ProductGallery images={product.images} name={product.name} />
+            </div>
+          ) : (
+            <div className="split-img reveal" style={{ display: "grid", placeItems: "center", padding: 40 }}>
               <div style={{ width: "min(320px, 70%)" }}>
                 <ProductIcon name={product.icon} />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="reveal">
             <p className="price-head" style={{ marginBottom: 10 }}>

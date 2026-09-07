@@ -658,6 +658,27 @@ main#app:focus { outline: none; }
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, transparent 55%, rgba(11, 28, 44, 0.45) 100%);
 }
+
+/* ---- Product photos ----
+   The large photo reuses .split-img so a product with one photo looks as it
+   always did; the thumbnails only appear when there is something to switch to. */
+.gallery { display: grid; gap: 12px; }
+.gallery-thumbs { display: flex; gap: 10px; }
+.gallery-thumb {
+  flex: 0 0 auto;
+  width: clamp(56px, 18%, 84px); aspect-ratio: 1;
+  padding: 0; overflow: hidden; cursor: pointer;
+  border: 1px solid var(--c-line-soft); border-radius: var(--radius-sm);
+  background: var(--c-night-soft);
+  opacity: 0.6; transition: opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumb:hover { opacity: 0.9; }
+.gallery-thumb.active { opacity: 1; border-color: var(--c-gold); }
+.gallery-thumb:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .gallery { max-width: 420px; margin: 0 auto; width: 100%; }
+}
 .about-body { color: var(--c-mute); }
 .about-body p { margin-bottom: 16px; }
 .about-body p:last-of-type { margin-bottom: 0; }
@@ -1371,6 +1392,18 @@ footer {
   border: 1px solid var(--c-line); border-radius: var(--radius-sm);
 }
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+/* ---- Several photos per product (admin) ---- */
+.image-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.image-slot {
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid var(--c-line-soft); border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.16);
+}
+.image-slot img { width: 96px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid var(--c-line); flex-shrink: 0; }
+.image-slot-label { flex: 1; min-width: 0; font-size: 0.82rem; color: var(--c-mute); }
+.image-slot:first-child .image-slot-label { color: var(--c-gold-soft); }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
 
 /* ---- Sign in, forgotten password, new password ---- */
