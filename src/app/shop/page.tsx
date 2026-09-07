@@ -20,7 +20,7 @@ export default async function ShopPage() {
         trail={[{ label: "Shop" }]}
         eyebrow="Shop"
         title='Jewelry, crystals <span class="accent">and written work</span>'
-        intro="Healing jewelry, crystals, personalised astrology reports and Ayurveda guides. Personalised pieces are made to your chart, so those are quoted on request."
+        intro="Reserve what speaks to you and Milan confirms by e-mail."
       />
       <Section>
         {products.length > 0 ? (
