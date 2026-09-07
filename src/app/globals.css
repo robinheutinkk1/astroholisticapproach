@@ -1777,3 +1777,94 @@ footer {
 @media (min-width: 901px) {
   .split-form { grid-template-columns: 1fr 0.85fr; align-items: start; }
 }
+
+/* ---- Admin: clarity pass ----
+   The admin's text always met WCAG; its structure did not. Card and field
+   borders measured 1.2:1 against their backgrounds, so a form read as one navy
+   surface with no edges, and nothing said which menu item you were on. This
+   lifts the line tokens inside the admin only, gives fields a fill lighter
+   than the page, makes labels read as labels, underlines section headings and
+   fills the active menu item. Scoped to .admin-shell: the site is untouched. */
+.admin-shell {
+  --c-line: rgba(245, 245, 245, 0.37);      /* 3.0:1 on the page and on a card */
+  --c-line-soft: rgba(245, 245, 245, 0.22);
+  --c-mute-2: rgba(245, 245, 245, 0.66);
+  --c-field: #1b3450;                        /* a field is a lighter box, not just an outline */
+}
+
+/* Fields: a box you can see before you click in it. */
+.admin-shell .admin-form input[type="text"],
+.admin-shell .admin-form input[type="number"],
+.admin-shell .admin-form input[type="email"],
+.admin-shell .admin-form input[type="password"],
+.admin-shell .admin-form input[type="tel"],
+.admin-shell .admin-form select,
+.admin-shell .admin-form textarea,
+.admin-shell .block input[type="text"],
+.admin-shell .block textarea {
+  background: var(--c-field);
+  border-color: var(--c-line);
+}
+.admin-shell .admin-form :focus-visible,
+.admin-shell .block :focus-visible { outline: 2px solid var(--c-gold); outline-offset: 1px; border-color: var(--c-gold); }
+.admin-shell ::placeholder { color: rgba(245, 245, 245, 0.38); }
+
+/* Labels read as labels; hints stay quieter but legible. */
+.admin-shell .admin-form label,
+.admin-shell .block-sub { font-size: 0.9rem; color: var(--c-light); font-weight: 500; }
+.admin-shell .admin-check { color: var(--c-light); }
+.admin-shell .admin-check input { width: 18px; height: 18px; }
+.admin-shell .image-hint,
+.admin-shell .admin-hint,
+.admin-shell .field-hint,
+.admin-shell .block-intro,
+.admin-shell .block-note { color: var(--c-mute-2); }
+
+/* Section headings carry a short gold rule, so a page falls into blocks. */
+.admin-shell .admin-main h2,
+.admin-shell .admin-head h2 { font-size: 1.6rem; }
+.admin-shell .admin-main > h2::after,
+.admin-shell .admin-head h2::after {
+  content: ""; display: block; width: 44px; height: 2px;
+  background: var(--c-gold); margin-top: 10px;
+}
+.admin-shell .admin-fieldset > legend,
+.admin-shell .admin-fieldset > h3 { font-size: 1.1rem; }
+
+/* Sidebar: its own panel, and the current page filled in gold. */
+.admin-shell .admin-side {
+  padding: 12px 10px;
+  background: rgba(245, 245, 245, 0.03);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--radius);
+}
+.admin-shell .admin-side-label { color: var(--c-mute-2); font-size: 0.7rem; }
+.admin-shell .admin-side-link { color: rgba(245, 245, 245, 0.85); font-size: 0.92rem; border-left: none; }
+.admin-shell .admin-side-link:hover { background: rgba(245, 245, 245, 0.08); color: var(--c-light); }
+.admin-shell .admin-side-link.active,
+.admin-shell .admin-side-link.active:hover { background: var(--c-gold); color: #0B1C2C; font-weight: 600; }
+
+/* Buttons: secondary ones with a visible edge, delete always readable as red. */
+.admin-shell .admin-ghost,
+.admin-shell .admin-nav a { color: var(--c-light); border-color: var(--c-line); }
+.admin-shell .admin-ghost:hover,
+.admin-shell .admin-nav a:hover { color: var(--c-gold); border-color: var(--c-gold); }
+.admin-shell .admin-danger { color: rgba(240, 165, 165, 0.9); }
+.admin-shell .admin-danger:hover { color: #ff8a8a; }
+.admin-shell .block-remove { color: var(--c-mute-2); }
+.admin-shell .block-tools button:not(:disabled) { color: rgba(245, 245, 245, 0.85); border-color: var(--c-line-soft); }
+
+/* Tiles and cards: a label you can read, an edge you can see. */
+.admin-shell .admin-tile .label { color: rgba(245, 245, 245, 0.8); font-size: 0.84rem; }
+/* Six one-column tiles were a whole screen of scrolling on a phone before
+   anything else showed; two abreast keeps the overview on one screen. */
+@media (max-width: 560px) {
+  .admin-shell .admin-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .admin-shell .admin-tile { padding: 14px 16px; }
+  .admin-shell .admin-tile .value { font-size: 1.6rem; }
+  .admin-shell .admin-tile .label { font-size: 0.78rem; }
+}
+.admin-shell .admin-tile:hover { border-color: var(--c-gold-dim); }
+.admin-shell .admin-item .sub,
+.admin-shell .admin-pill { color: var(--c-mute-2); }
+.admin-shell .admin-bar p { color: var(--c-mute-2); }
