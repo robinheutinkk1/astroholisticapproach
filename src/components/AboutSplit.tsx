@@ -22,7 +22,7 @@ export function AboutSplit() {
           From the <span className="accent">stage</span> to the chart
         </h2>
         <div className="about-panel about-body">
-          <p>I am Milan Landkroon, 47 years, living and working in Amsterdam, The Netherlands.</p>
+          <p>I am Milan Landkroon, born in 1979, living and working in Amsterdam, The Netherlands.</p>
           <p>
             I started as multi media performing artist, dancer, choreographer and conceptual artist. Already I started at
             a young age specializing in Astrology chart Readings, Cards Readings, Positive Psychology and Ayurveda.
