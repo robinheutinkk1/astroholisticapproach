@@ -102,7 +102,7 @@ export function SessionsForm({ sessions }: { sessions: Settings["sessions"] }) {
           </div>
 
           <div style={{ marginTop: 14 }}>
-            <label htmlFor={`high-${index}`}>What is included — one per line</label>
+            <label htmlFor={`high-${index}`}>What is included (one per line)</label>
             <textarea
               id={`high-${index}`}
               rows={4}

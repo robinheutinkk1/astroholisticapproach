@@ -120,11 +120,11 @@ export async function submitReservation(_previous: ReserveState, formData: FormD
   const rows = lines
     .map(
       ({ product, quantity }) =>
-        `<li>${quantity} × ${escapeHtml(product.name)} — ${formatPrice(product.price_cents * quantity, currency)}</li>`,
+        `<li>${quantity} × ${escapeHtml(product.name)}, ${formatPrice(product.price_cents * quantity, currency)}</li>`,
     )
     .join("");
   await sendNotification({
-    subject: `New reservation from ${name} — ${formatPrice(amountCents, currency)}`,
+    subject: `New reservation from ${name}: ${formatPrice(amountCents, currency)}`,
     replyTo: email,
     html: `
       <h2>New reservation</h2>

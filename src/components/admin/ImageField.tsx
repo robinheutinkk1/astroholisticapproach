@@ -89,7 +89,7 @@ export function ImageField({
         className="mono"
         value={url}
         onChange={(event) => setUrl(event.target.value)}
-        placeholder="No image yet — choose one above, or paste a URL"
+        placeholder="No image yet. Choose one above, or paste a URL"
         style={{ marginTop: 10 }}
       />
 

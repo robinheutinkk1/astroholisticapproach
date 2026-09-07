@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(env.siteUrl),
     title: {
-      default: `${site.name} — Astrology, Cards, Positive Psychology & Ayurveda`,
+      default: `${site.name} | Astrology, Cards, Positive Psychology & Ayurveda`,
       template: `%s | ${site.name}`,
     },
     description: settings.brand.description,

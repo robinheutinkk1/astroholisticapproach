@@ -25,7 +25,7 @@ export function CartView() {
           ✓
         </span>
         <span className="msg">
-          Thank you — your reservation has reached Milan. He looks at every request personally and will e-mail
+          Thank you, your reservation has reached Milan. He looks at every request personally and will e-mail
           you within 24 hours to confirm and arrange payment. Nothing has been charged.
         </span>
       </div>
@@ -129,13 +129,13 @@ export function CartView() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone — optional</label>
+          <label htmlFor="phone">Phone (optional)</label>
           <input type="tel" id="phone" name="phone" autoComplete="tel" inputMode="tel" placeholder="If you would rather be called" />
           <FieldError message={state.fieldErrors?.phone} />
         </div>
 
         <div className="form-group">
-          <label htmlFor="note">Anything Milan should know — optional</label>
+          <label htmlFor="note">Anything Milan should know (optional)</label>
           <textarea id="note" name="note" rows={3} placeholder="A question, a wish for a particular stone, a delivery address…" />
           <FieldError message={state.fieldErrors?.note} />
         </div>

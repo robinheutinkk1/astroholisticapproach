@@ -7,7 +7,7 @@ import type { ContactMessage } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 function interestLabel(value: string | null): string {
-  if (!value) return "—";
+  if (!value) return "Not given";
   return interests.find((option) => option.value === value)?.label ?? value;
 }
 

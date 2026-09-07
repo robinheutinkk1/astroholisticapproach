@@ -11,7 +11,7 @@ export default async function AccountPage() {
       <h2>Your account</h2>
       <p style={{ color: "var(--c-mute-2)", fontSize: "0.86rem", margin: "8px 0 26px" }}>
         You are signed in as <strong style={{ color: "var(--c-light)" }}>{admin.email}</strong>. To
-        change the address itself, ask whoever set the site up — that one is changed in Supabase.
+        change the address itself, ask whoever set the site up. That one is changed in Supabase.
       </p>
 
       <div className="admin-card" style={{ maxWidth: 520 }}>

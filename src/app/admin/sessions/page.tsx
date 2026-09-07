@@ -11,7 +11,7 @@ export default async function AdminSessionsPage() {
       <div className="admin-head">
         <h2>Sessions</h2>
         <p>
-          The three blocks on the sessions page. Untick one to take it off the page without losing what you wrote — it
+          The three blocks on the sessions page. Untick one to take it off the page without losing what you wrote. It
           comes back exactly as it was.
         </p>
       </div>

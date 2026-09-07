@@ -21,11 +21,11 @@ export function PostForm({ post }: { post?: Post }) {
 
       <div className="admin-row">
         <div>
-          <label htmlFor="slug">Slug — leave empty to generate from the title</label>
+          <label htmlFor="slug">Slug (leave empty to generate from the title)</label>
           <input id="slug" name="slug" type="text" defaultValue={post?.slug} />
         </div>
         <div>
-          <label htmlFor="category">Category — shown on the card</label>
+          <label htmlFor="category">Category (shown on the card)</label>
           <input id="category" name="category" type="text" defaultValue={post?.category ?? ""} placeholder="Astrology" />
         </div>
         <div>
@@ -47,7 +47,7 @@ export function PostForm({ post }: { post?: Post }) {
           defaultValue={post?.cover_image ?? ""}
         />
         <div>
-          <label htmlFor="tags">Tags — comma separated</label>
+          <label htmlFor="tags">Tags (comma separated)</label>
           <input id="tags" name="tags" type="text" defaultValue={post?.tags.join(", ") ?? ""} />
         </div>
       </div>
