@@ -886,15 +886,26 @@ a.tag:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 2px; }
 /* ========================================================
    SHOP
    ======================================================== */
-.shop-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 46px; }
-@media (max-width: 800px) { .shop-cats { grid-template-columns: repeat(2, 1fr); } }
+/* Category filter: a row of small pills at their natural width. As a 2×2 grid
+   of 52px buttons it took 119px plus a 46px margin on a phone, and the first
+   product started 728px down — below the fold on a 360px screen. */
+.shop-cats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
 .shop-cat {
-  padding: 14px 18px; border-radius: 100px; border: 1px solid var(--c-line);
-  background: rgba(245, 245, 245, 0.03); color: var(--c-light);
-  font: inherit; font-size: 0.85rem; text-align: center;
-  transition: all 0.3s var(--ease); cursor: pointer;
+  padding: 8px 15px; border-radius: 100px; border: 1px solid var(--c-line);
+  background: rgba(245, 245, 245, 0.03); color: var(--c-mute);
+  font: inherit; font-size: 0.78rem; letter-spacing: 0.02em; line-height: 1.3; white-space: nowrap;
+  transition: color 0.25s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease);
+  cursor: pointer;
 }
-.shop-cat.active, .shop-cat:hover { background: var(--c-gold); border-color: var(--c-gold); color: #0B1C2C; font-weight: 600; }
+.shop-cat:hover { color: var(--c-gold); border-color: var(--c-gold-dim); }
+.shop-cat.active { background: var(--c-gold); border-color: var(--c-gold); color: #0B1C2C; font-weight: 600; }
+.shop-cat:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 2px; }
+@media (max-width: 560px) {
+  /* All four fit one row on a 390px screen at this size; the min-height keeps
+     each a comfortable tap target without the old bulk coming back. */
+  .shop-cats { gap: 6px; margin-bottom: 24px; }
+  .shop-cat { padding: 9px 12px; min-height: 36px; }
+}
 
 .product-card {
   background: var(--c-night-soft); border: 1px solid var(--c-line);
