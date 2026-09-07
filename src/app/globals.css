@@ -658,6 +658,27 @@ main#app:focus { outline: none; }
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, transparent 55%, rgba(11, 28, 44, 0.45) 100%);
 }
+
+/* ---- Product photos ----
+   The large photo reuses .split-img so a product with one photo looks as it
+   always did; the thumbnails only appear when there is something to switch to. */
+.gallery { display: grid; gap: 12px; }
+.gallery-thumbs { display: flex; gap: 10px; }
+.gallery-thumb {
+  flex: 0 0 auto;
+  width: clamp(56px, 18%, 84px); aspect-ratio: 1;
+  padding: 0; overflow: hidden; cursor: pointer;
+  border: 1px solid var(--c-line-soft); border-radius: var(--radius-sm);
+  background: var(--c-night-soft);
+  opacity: 0.6; transition: opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumb:hover { opacity: 0.9; }
+.gallery-thumb.active { opacity: 1; border-color: var(--c-gold); }
+.gallery-thumb:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .gallery { max-width: 420px; margin: 0 auto; width: 100%; }
+}
 .about-body { color: var(--c-mute); }
 .about-body p { margin-bottom: 16px; }
 .about-body p:last-of-type { margin-bottom: 0; }
@@ -1185,6 +1206,29 @@ footer {
 }
 .cart-summary .amount { font-family: var(--font-serif); font-size: 1.9rem; color: var(--c-gold); }
 .cart-note { text-align: center; font-size: 0.78rem; color: var(--c-mute-2); margin-top: 16px; }
+/* The reservation form sits under the cart total, so it needs a breath of
+   space and no second card border of its own. */
+.reserve-form { margin-top: 32px; }
+
+/* ---- Reservations (admin) ---- */
+.order-pill {
+  display: inline-block; padding: 4px 11px; border-radius: 999px;
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  border: 1px solid var(--c-line-soft); color: var(--c-mute-2);
+}
+.order-pill.status-requested { color: var(--c-gold); border-color: transparent; background: rgba(212, 175, 55, 0.16); }
+.order-pill.status-confirmed { color: #a8dcb8; border-color: transparent; background: rgba(120, 190, 140, 0.14); }
+.order-pill.status-fulfilled { color: var(--c-mute); }
+.order-pill.status-cancelled { color: var(--c-mute-2); text-decoration: line-through; }
+.order-contact { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.86rem; color: var(--c-mute); margin-top: 4px; }
+.order-contact a { color: var(--c-gold-soft); }
+.order-contact a:hover { color: var(--c-gold); }
+.order-note {
+  margin-top: 14px; padding: 12px 14px; font-size: 0.88rem; color: var(--c-mute);
+  border-left: 2px solid var(--c-gold-dim); background: rgba(0, 0, 0, 0.16); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  white-space: pre-line;
+}
+.order-note span { display: block; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-mute-2); margin-bottom: 4px; }
 
 /* ---- Empty states ---- */
 .empty-state {
@@ -1371,7 +1415,44 @@ footer {
   border: 1px solid var(--c-line); border-radius: var(--radius-sm);
 }
 .image-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+/* ---- Several photos per product (admin) ---- */
+.image-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.image-slot {
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid var(--c-line-soft); border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.16);
+}
+.image-slot img { width: 96px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid var(--c-line); flex-shrink: 0; }
+.image-slot-label { flex: 1; min-width: 0; font-size: 0.82rem; color: var(--c-mute); }
+.image-slot:first-child .image-slot-label { color: var(--c-gold-soft); }
 .image-hint { font-size: 0.76rem; color: var(--c-mute-2); }
+
+/* ---- Sign in, forgotten password, new password ---- */
+.auth-card { max-width: 380px; margin: 0 auto; }
+.auth-card h1 { font-size: 2rem; text-align: center; }
+.auth-lead { text-align: center; color: var(--c-mute-2); font-size: 0.88rem; margin: 12px 0 28px; }
+.auth-alt { text-align: center; font-size: 0.84rem; margin-top: 18px; }
+.auth-alt a { color: var(--c-gold-soft); }
+.auth-alt a:hover { color: var(--c-gold); }
+.auth-done {
+  border: 1px solid var(--c-line);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--c-light);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 0.88rem;
+}
+.admin-done {
+  border: 1px solid rgba(120, 190, 140, 0.4);
+  background: rgba(120, 190, 140, 0.1);
+  color: #a8dcb8;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.86rem;
+}
+.field-hint { font-size: 0.76rem; color: var(--c-mute-2); margin-top: 7px; }
 
 /* ---- Block editor ----
    One labelled box per piece of the article. Everything here exists so the

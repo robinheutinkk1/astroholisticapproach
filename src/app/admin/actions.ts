@@ -7,6 +7,9 @@ import { getAdminUser } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/format";
+import { MAX_PRODUCT_IMAGES } from "@/lib/product-images";
+import { ORDER_STATUSES } from "@/lib/orders";
+import type { OrderStatus } from "@/lib/types";
 import { defaults, schemas, type SettingsKey } from "@/lib/settings";
 
 export type ActionState = { error?: string };
@@ -141,7 +144,9 @@ const productSchema = z.object({
   price_cents: z.number().int().min(0, "Price cannot be negative."),
   price_on_request: z.boolean(),
   currency: z.string().trim().length(3).toLowerCase(),
-  image_url: z.url("Image must be a valid URL.").nullable(),
+  images: z
+    .array(z.url("Each photo must be a valid URL."))
+    .max(MAX_PRODUCT_IMAGES, `A product can have at most ${MAX_PRODUCT_IMAGES} photos.`),
   icon: z.enum(["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"]),
   category: z.enum(["reports", "jewelry", "crystals"]),
   badge: z.string().trim().max(40).nullable(),
@@ -170,7 +175,8 @@ export async function saveProduct(
     price_cents: Math.round(Number(rawPrice) * 100),
     price_on_request: formData.get("price_on_request") === "on",
     currency: formData.get("currency") ?? "eur",
-    image_url: optionalText(formData.get("image_url")),
+    // One hidden input per photo, in display order; blanks are unused slots.
+    images: formData.getAll("images").map((value) => String(value).trim()).filter(Boolean),
     icon: formData.get("icon") ?? "star",
     category: formData.get("category") ?? "reports",
     badge: optionalText(formData.get("badge")),
@@ -229,12 +235,18 @@ export async function setOrderStatus(formData: FormData): Promise<void> {
 
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
-  if (!id || !["pending", "paid", "fulfilled", "cancelled"].includes(status)) return;
+  if (!id || !ORDER_STATUSES.includes(status as OrderStatus)) return;
 
+  // One database call that changes the status and moves stock with it —
+  // held on confirmation, released on cancellation — so the two can never
+  // drift apart, however many times the button is pressed.
   const supabase = createSupabaseAdminClient();
-  await supabase.from("orders").update({ status }).eq("id", id);
+  const { error } = await supabase.rpc("set_order_status", { p_order: id, p_status: status });
+  if (error) console.error("[orders] status change failed", error.message);
 
   revalidatePath("/admin/orders");
+  revalidatePath("/admin");
+  revalidatePath("/shop");
 }
 
 export async function toggleMessageHandled(formData: FormData): Promise<void> {

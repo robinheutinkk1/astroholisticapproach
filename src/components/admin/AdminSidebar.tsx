@@ -17,13 +17,16 @@ const groups = [
   {
     label: "Inbox",
     items: [
-      { href: "/admin/orders", label: "Orders" },
+      { href: "/admin/orders", label: "Reservations" },
       { href: "/admin/messages", label: "Messages" },
     ],
   },
   {
     label: "Site",
-    items: [{ href: "/admin/site", label: "Details & socials" }],
+    items: [
+      { href: "/admin/site", label: "Details & socials" },
+      { href: "/admin/account", label: "Your account" },
+    ],
   },
 ];
 

@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { saveProduct, type ActionState } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
-import { ImageField } from "@/components/admin/ImageField";
+import { ImageListField } from "@/components/admin/ImageListField";
 import { BlockEditor } from "@/components/admin/BlockEditor";
 
 const icons = ["chart", "star", "book", "circle", "heart", "beads", "gem", "triple", "leaf"];
@@ -97,11 +97,11 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      <ImageField
-        name="image_url"
-        label="Product photo — replaces the drawn mark"
+      <ImageListField
+        name="images"
+        label="Photos — replace the drawn mark"
         folder="products"
-        defaultValue={product?.image_url ?? ""}
+        defaultValue={product?.images ?? []}
       />
 
       <BlockEditor
