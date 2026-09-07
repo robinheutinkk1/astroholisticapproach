@@ -83,7 +83,7 @@ export async function submitContactForm(
 
   // The enquiry is already stored; a failed email must not fail the request.
   await sendNotification({
-    subject: `New enquiry from ${firstName} ${lastName} — ${interestLabel}`,
+    subject: `New enquiry from ${firstName} ${lastName}: ${interestLabel}`,
     replyTo: email,
     html: `
       <h2>New session request</h2>

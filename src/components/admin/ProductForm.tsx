@@ -23,7 +23,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
       <div className="admin-row">
         <div>
-          <label htmlFor="slug">Slug — leave empty to generate from the name</label>
+          <label htmlFor="slug">Slug (leave empty to generate from the name)</label>
           <input id="slug" name="slug" type="text" defaultValue={product?.slug} />
         </div>
         <div>
@@ -35,19 +35,19 @@ export function ProductForm({ product }: { product?: Product }) {
           </select>
         </div>
         <div>
-          <label htmlFor="badge">Badge — e.g. Bestseller</label>
+          <label htmlFor="badge">Badge, e.g. Bestseller</label>
           <input id="badge" name="badge" type="text" defaultValue={product?.badge ?? ""} />
         </div>
       </div>
 
       <div>
-        <label htmlFor="summary">Summary — shown on the card</label>
+        <label htmlFor="summary">Summary (shown on the card)</label>
         <textarea id="summary" name="summary" rows={2} defaultValue={product?.summary ?? ""} />
       </div>
 
       <div className="admin-row">
         <div>
-          <label htmlFor="price">Price — e.g. 89.00</label>
+          <label htmlFor="price">Price, e.g. 89.00</label>
           <input
             id="price"
             name="price"
@@ -73,12 +73,12 @@ export function ProductForm({ product }: { product?: Product }) {
 
       <label className="admin-check">
         <input type="checkbox" name="price_on_request" defaultChecked={product?.price_on_request ?? false} />
-        Price on request — shows an enquiry link instead of a buy button
+        Price on request: shows an enquiry link instead of a buy button
       </label>
 
       <div className="admin-row">
         <div>
-          <label htmlFor="stock">Stock — leave empty for unlimited</label>
+          <label htmlFor="stock">Stock (leave empty for unlimited)</label>
           <input id="stock" name="stock" type="number" min={0} defaultValue={product?.stock ?? ""} />
         </div>
         <div>
@@ -86,7 +86,7 @@ export function ProductForm({ product }: { product?: Product }) {
           <input id="sort_order" name="sort_order" type="number" defaultValue={product?.sort_order ?? 0} />
         </div>
         <div>
-          <label htmlFor="icon">Drawn mark — used when there is no image</label>
+          <label htmlFor="icon">Drawn mark (used when there is no photo)</label>
           <select id="icon" name="icon" defaultValue={product?.icon ?? "star"}>
             {icons.map((icon) => (
               <option value={icon} key={icon}>
@@ -99,7 +99,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
       <ImageListField
         name="images"
-        label="Photos — replace the drawn mark"
+        label="Photos (replace the drawn mark)"
         folder="products"
         defaultValue={product?.images ?? []}
       />

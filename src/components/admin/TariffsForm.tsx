@@ -14,7 +14,7 @@ const GROUPS: { group: keyof Tariffs; title: string; note?: string; fields: { ke
   {
     group: "astrology",
     title: "Astrology readings",
-    note: "The reading price covers Western, Vedic and natal — they share one amount.",
+    note: "The reading price covers Western, Vedic and natal. They share one amount.",
     fields: [
       { key: "reading", label: "Western, Vedic or natal chart" },
       { key: "loveFirstHour", label: "Love & relationship reading" },

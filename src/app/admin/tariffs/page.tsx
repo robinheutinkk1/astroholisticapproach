@@ -11,7 +11,7 @@ export default async function AdminTariffsPage() {
       <div className="admin-head">
         <h2>Tariffs</h2>
         <p>
-          Every amount shown on the site. Write them the way they should read, including the currency sign — for
+          Every amount shown on the site. Write them the way they should read, including the currency sign, for
           example <strong>€225</strong> or <strong>€2,000</strong>. An amount used on several pages changes on all of
           them at once.
         </p>

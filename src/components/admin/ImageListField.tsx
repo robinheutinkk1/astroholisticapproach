@@ -68,7 +68,7 @@ export function ImageListField({
     <div>
       <label>{label}</label>
       <p className="image-hint" style={{ marginBottom: 10 }}>
-        The first photo is the main one — it is what the shop shows. Use the arrows to change the
+        The first photo is the main one: it is what the shop shows. Use the arrows to change the
         order.
       </p>
 

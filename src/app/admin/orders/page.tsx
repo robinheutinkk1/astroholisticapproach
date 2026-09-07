@@ -27,8 +27,7 @@ export default async function AdminOrdersPage() {
       <h2 style={{ fontSize: "1.5rem" }}>Reservations &amp; orders</h2>
       <p style={{ color: "var(--c-mute-2)", fontSize: "0.86rem", margin: "8px 0 0" }}>
         {open === 0 ? "Nothing waiting for you." : open === 1 ? "One reservation waiting for a reply." : `${open} reservations waiting for a reply.`}{" "}
-        Set a reservation to <strong style={{ color: "var(--c-light)" }}>Confirmed</strong> once you have said yes — that holds the
-        pieces — and to <strong style={{ color: "var(--c-light)" }}>Cancelled</strong> to release them again.
+        Set a reservation to <strong style={{ color: "var(--c-light)" }}>Confirmed</strong> once you have said yes (that holds the pieces), and to <strong style={{ color: "var(--c-light)" }}>Cancelled</strong> to release them again.
       </p>
 
       <div style={{ display: "grid", gap: 16, marginTop: 28 }}>
@@ -38,7 +37,7 @@ export default async function AdminOrdersPage() {
               <div style={{ minWidth: 0 }}>
                 <span className={`order-pill status-${order.status}`}>{STATUS_LABELS[order.status].label}</span>
                 <div style={{ marginTop: 10 }}>
-                  <strong>{order.customer_name ?? "—"}</strong>
+                  <strong>{order.customer_name ?? "No name given"}</strong>
                 </div>
                 <div className="order-contact">
                   {order.email && <a href={mailto(order)}>{order.email}</a>}
@@ -73,7 +72,7 @@ export default async function AdminOrdersPage() {
             <ul style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--c-line-soft)", color: "var(--c-mute)", fontSize: "0.9rem" }}>
               {order.order_items?.map((item) => (
                 <li key={item.id}>
-                  {item.quantity} × {item.name} — {formatPrice(item.unit_price_cents * item.quantity, order.currency)}
+                  {item.quantity} × {item.name}, {formatPrice(item.unit_price_cents * item.quantity, order.currency)}
                 </li>
               ))}
             </ul>
@@ -102,6 +101,6 @@ export default async function AdminOrdersPage() {
 /** Opens Milan's own mail app with the address and a subject already filled in. */
 function mailto(order: OrderRow): string {
   const pieces = order.order_items.map((item) => `${item.quantity} × ${item.name}`).join(", ");
-  const subject = `Your reservation at Holistic Astro Approach — ${pieces}`;
+  const subject = `Your reservation at Holistic Astro Approach: ${pieces}`;
   return `mailto:${order.email}?subject=${encodeURIComponent(subject)}`;
 }

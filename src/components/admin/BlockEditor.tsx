@@ -69,8 +69,7 @@ export function BlockEditor({
       ) : (
         <>
       <p className="block-intro">
-        Each box below is one piece of the article, top to bottom. Add what you need, drag nothing —
-        use the arrows to move a box up or down.
+        Each box below is one piece of the article, top to bottom. Add what you need, and use the arrows to move a box up or down.
       </p>
 
       <div className="block-list">
@@ -205,7 +204,7 @@ function BlockBody({
       return (
         <>
           <p className="block-note">
-            This part was written by hand — a table, an embed or something similar. It is kept
+            This part was written by hand: a table, an embed or something similar. It is kept
             exactly as it is. Leave it alone unless you know what it does.
           </p>
           <textarea
@@ -412,7 +411,7 @@ function ImageBlock({
 
       {error && <p className="admin-alert" style={{ marginTop: 10 }}>{error}</p>}
 
-      <label className="block-sub">Describe the picture — read aloud to blind visitors, and shown if it fails to load</label>
+      <label className="block-sub">Describe the picture (read aloud to blind visitors, and shown if it fails to load)</label>
       <input
         type="text"
         value={alt}
@@ -439,7 +438,7 @@ function VideoBlock({ url, onChange }: { url: string; onChange: (url: string) =>
       />
       <p className={trimmed && !known ? "block-warn" : "block-sub"}>
         {!trimmed
-          ? "Paste the link straight from YouTube or Vimeo — the address bar or the Share button, either works."
+          ? "Paste the link straight from YouTube or Vimeo. The address bar or the Share button, either works."
           : known
             ? "Recognised. This becomes a player on the page."
             : "That is not a YouTube or Vimeo address. It will show up as a plain link, not a player."}

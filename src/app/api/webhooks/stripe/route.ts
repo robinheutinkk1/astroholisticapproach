@@ -75,10 +75,10 @@ async function handleCompletedSession(session: Stripe.Checkout.Session) {
     .join("");
 
   await sendNotification({
-    subject: `New order — ${formatPrice(order.amount_cents, order.currency)}`,
+    subject: `New order: ${formatPrice(order.amount_cents, order.currency)}`,
     html: `
       <h2>New paid order</h2>
-      <p><strong>Customer:</strong> ${order.customer_name ?? "—"} (${order.email ?? "—"})</p>
+      <p><strong>Customer:</strong> ${order.customer_name ?? "unknown"} (${order.email ?? "unknown"})</p>
       <p><strong>Total:</strong> ${formatPrice(order.amount_cents, order.currency)}</p>
       <ul>${rows}</ul>
     `,
