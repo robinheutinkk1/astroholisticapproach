@@ -326,8 +326,16 @@ h4 { font-size: 1.05rem; font-weight: 600; font-family: var(--font-sans); }
   border-radius: 999px; font-size: 0.68rem; font-weight: 700; line-height: 1;
 }
 @media (max-width: 520px) {
-  .nav-cart { padding: 7px 11px; }
+  .nav-cart { padding: 7px 11px; position: relative; }
   .nav-cart-label { display: none; }
+  /* The count sits on the icon's corner instead of beside it. Beside it, the
+     pill grew 29px the moment something was in the cart, and on a 360px phone
+     that width came straight out of the logo. */
+  .nav-cart .count {
+    position: absolute; top: -5px; right: -5px;
+    min-width: 17px; height: 17px; padding: 0 4px; font-size: 0.64rem;
+    box-shadow: 0 0 0 2px var(--c-night);
+  }
 }
 .nav-cta-mobile { display: none; }
 @media (max-width: 1400px) { .nav-cta-mobile { display: list-item; } }
@@ -1728,6 +1736,12 @@ footer {
   .logo { font-size: 1rem; gap: 8px; }
   .logo-mark { width: 28px; height: 28px; }
   .nav-cart { padding: 7px 10px; gap: 6px; }
+}
+/* 320px screens: 280px of row minus two buttons leaves 174px, and the wordmark
+   needs 200. One step down in size beats losing the last letters of it. */
+@media (max-width: 340px) {
+  .logo { font-size: 0.86rem; gap: 6px; }
+  .logo-mark { width: 24px; height: 24px; }
 }
 
 /* Entry price on the "where to start" cards, in place of the old link to the
