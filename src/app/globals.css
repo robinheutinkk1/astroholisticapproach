@@ -1868,3 +1868,36 @@ footer {
 .admin-shell .admin-item .sub,
 .admin-shell .admin-pill { color: var(--c-mute-2); }
 .admin-shell .admin-bar p { color: var(--c-mute-2); }
+
+/* ---- Admin on a touch screen ----
+   Measured on iPad sizes: the layout holds (no overflow, sidebar as a column
+   from 1024px, sensible form columns), but 38 of 70 things a finger has to hit
+   were under the 44px a fingertip needs, the block editor's arrows and format
+   buttons at 30px. Only when the pointer is a finger: a mouse keeps the
+   compact sizes. */
+@media (pointer: coarse) {
+  .admin-shell .admin-ghost,
+  .admin-shell .admin-nav a,
+  .admin-shell .admin-side-link,
+  .admin-shell .btn { min-height: 44px; }
+  .admin-shell .admin-side-link { display: flex; align-items: center; }
+  .admin-shell .admin-danger { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; }
+  .admin-shell .admin-check input { width: 22px; height: 22px; }
+  .admin-shell .admin-check { min-height: 44px; }
+  .admin-shell .block-tools button,
+  .admin-shell .block-remove { width: 44px; height: 44px; font-size: 1.05rem; }
+  .admin-shell .block-tools { gap: 2px; }
+  .admin-shell .block-format button { min-width: 44px; height: 44px; font-size: 0.95rem; }
+  .admin-shell .block-format { gap: 6px; }
+  .admin-shell .block-add .admin-ghost { min-height: 44px; }
+  .admin-shell .image-slot .block-tools button { width: 44px; height: 44px; }
+  .admin-shell .gallery-thumb,
+  .admin-shell .admin-pill { min-height: 44px; }
+  .admin-shell .admin-form input[type="text"],
+  .admin-shell .admin-form input[type="number"],
+  .admin-shell .admin-form input[type="email"],
+  .admin-shell .admin-form input[type="password"],
+  .admin-shell .admin-form input[type="tel"],
+  .admin-shell .admin-form select,
+  .admin-shell .block input[type="text"] { min-height: 46px; }
+}
