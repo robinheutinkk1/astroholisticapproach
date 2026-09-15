@@ -1128,6 +1128,19 @@ footer {
   flex-wrap: wrap; gap: 16px; font-size: 0.82rem; color: var(--c-mute-2);
 }
 .footer-bottom a:hover { color: var(--c-gold); }
+.footer-legal { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* The way into the admin. Dimmer than the legal links beside it, and it only
+   takes its full colour when you are actually on it. */
+.footer-signin {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-left: 6px; padding: 4px 10px;
+  border: 1px solid var(--c-line-soft); border-radius: 999px;
+  font-size: 0.76rem; color: rgba(245, 245, 245, 0.42);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.footer-signin svg { opacity: 0.75; }
+.footer-signin:hover,
+.footer-signin:focus-visible { color: var(--c-gold); border-color: var(--c-gold-dim); }
 .socials { display: flex; gap: 10px; margin-top: 8px; }
 .socials a {
   width: 36px; height: 36px; border-radius: 50%;

@@ -109,8 +109,17 @@ export async function SiteFooter() {
           <span>
             © {new Date().getFullYear()} {site.name} · {site.owner} · All rights reserved.
           </span>
-          <span>
+          <span className="footer-legal">
             <Link href="/terms">Terms</Link> · <Link href="/terms">Privacy</Link>
+            {/* Milan's way in. Quiet on purpose: useful to one person, noise
+                to everyone else. The login page itself is set to noindex. */}
+            <Link href="/login" className="footer-signin">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              Sign in
+            </Link>
           </span>
         </div>
       </div>
