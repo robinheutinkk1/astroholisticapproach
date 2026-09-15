@@ -43,6 +43,10 @@ export default async function AdminDashboard() {
 
   return (
     <div>
+      <h2>Overview</h2>
+      <p style={{ color: "var(--c-mute-2)", fontSize: "0.88rem", margin: "0 0 22px" }}>
+        What is waiting for you, and where everything is.
+      </p>
       <div className="admin-grid">
         {tiles.map((tile) => (
           <Link className="admin-tile" href={tile.href} key={tile.label}>

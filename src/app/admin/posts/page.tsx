@@ -14,7 +14,7 @@ export default async function AdminPostsPage() {
   return (
     <div>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-        <h2 style={{ fontSize: "1.5rem" }}>Blog</h2>
+        <h2>Blog</h2>
         <Link href="/admin/posts/new" className="btn btn-primary">
           New article
         </Link>

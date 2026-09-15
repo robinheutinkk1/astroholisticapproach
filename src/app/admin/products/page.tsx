@@ -14,7 +14,7 @@ export default async function AdminProductsPage() {
   return (
     <div>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-        <h2 style={{ fontSize: "1.5rem" }}>Shop</h2>
+        <h2>Shop</h2>
         <Link href="/admin/products/new" className="btn btn-primary">
           New product
         </Link>
