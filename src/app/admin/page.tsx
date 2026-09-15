@@ -32,12 +32,13 @@ async function getStats() {
 export default async function AdminDashboard() {
   const stats = await getStats();
 
-  const tiles = [
+  const tiles: { label: string; value: string; href: string; open?: boolean }[] = [
     { label: "Published articles", value: String(stats.published), href: "/admin/posts" },
     { label: "Drafts", value: String(stats.drafts), href: "/admin/posts" },
     { label: "Active products", value: String(stats.products), href: "/admin/products" },
-    { label: "Unread messages", value: String(stats.unhandled), href: "/admin/messages" },
-    { label: "New reservations", value: String(stats.requested), href: "/admin/orders" },
+    // Gold marks what is waiting for a reply; the rest are plain counts.
+    { label: "Unread messages", value: String(stats.unhandled), href: "/admin/messages", open: stats.unhandled > 0 },
+    { label: "New reservations", value: String(stats.requested), href: "/admin/orders", open: stats.requested > 0 },
     { label: "Revenue (fulfilled)", value: formatPrice(stats.revenueCents, stats.currency), href: "/admin/orders" },
   ];
 
@@ -51,7 +52,7 @@ export default async function AdminDashboard() {
         {tiles.map((tile) => (
           <Link className="admin-tile" href={tile.href} key={tile.label}>
             <span className="label">{tile.label}</span>
-            <div className="value">{tile.value}</div>
+            <div className={`value${tile.open ? " is-open" : ""}`}>{tile.value}</div>
           </Link>
         ))}
       </div>

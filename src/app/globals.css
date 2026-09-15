@@ -2057,8 +2057,31 @@ footer {
 .admin-shell .admin-main .admin-head h2 { font-size: 2rem; margin-bottom: 4px; }
 .admin-shell .admin-main > h2::after,
 .admin-shell .admin-main .admin-head h2::after { margin-top: 12px; margin-bottom: 18px; }
-.admin-shell .admin-main .admin-grid { margin-top: 10px; }
-.admin-shell .admin-main .admin-tile { background: #f5f6f8; }
+/* Overview tiles: a label as a small heading, the number underneath at a
+   size that means something, and no more padding than the number needs. */
+.admin-shell .admin-main .admin-grid {
+  margin-top: 10px; gap: 12px;
+  /* Six tiles, three per row: two even rows instead of five and an orphan. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-shell .admin-main .admin-tile {
+  background: #f5f6f8; padding: 16px 20px 18px; border-radius: 12px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 104px;
+}
+.admin-shell .admin-main .admin-tile .label {
+  font-size: 0.86rem; font-weight: 500; color: var(--c-mute); line-height: 1.3; text-transform: none; letter-spacing: 0;
+}
+.admin-shell .admin-main .admin-tile .value {
+  font-size: 2.4rem; line-height: 1; margin: auto 0 0; font-weight: 500;
+  color: var(--c-light); font-variant-numeric: tabular-nums;
+}
+.admin-shell .admin-main .admin-tile .value.is-open { color: var(--c-gold-text); }
+@media (max-width: 700px) {
+  .admin-shell .admin-main .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .admin-shell .admin-main .admin-tile { padding: 14px 16px 16px; min-height: 96px; }
+  .admin-shell .admin-main .admin-tile .label { font-size: 0.8rem; }
+  .admin-shell .admin-main .admin-tile .value { font-size: 2rem; }
+}
 
 /* Narrow screens: the sidebar becomes a strip across the top, the menu a
    horizontal row you can swipe, the account footer a single line. */
