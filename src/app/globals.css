@@ -1904,3 +1904,88 @@ footer {
   .admin-shell .admin-form select,
   .admin-shell .block input[type="text"] { min-height: 46px; }
 }
+
+/* ---- Admin: white working surface ----
+   The frame (top bar, sidebar) keeps the site's navy and gold. Everything in
+   .admin-main, where the editing happens, sits on a light sheet with dark
+   text. Done through the same colour tokens the admin components already
+   use, re-declared on .admin-main, so cards, fields, pills and the block
+   editor all follow; the handful of literal dark colours are overridden
+   below. Gold stays for fills (buttons, the active item) where navy text sits
+   on it; as *text* on white it is too pale, so a darker gold takes over. */
+.admin-main {
+  --c-light: #0f1d2b;        /* text: 15:1 on white */
+  --c-mute: #3a4756;         /* secondary text: 9:1 */
+  --c-mute-2: #5f6b78;       /* hints: 5.6:1 */
+  --c-night: #ffffff;        /* surfaces that used the page colour */
+  --c-night-soft: #ffffff;   /* cards */
+  --c-line: #78838f;         /* borders: 3.3:1 on white, 3.0 on the pane */
+  --c-line-soft: #d7dde4;
+  --c-gold-soft: #7a5f14;    /* gold as text: 6:1 on white */
+  --c-gold-dim: #b4931f;
+  --c-field: #ffffff;
+  --c-gold-text: #7a5f14;
+  background: #f5f6f8;
+  color: var(--c-light);
+  border: 1px solid #d7dde4;
+  border-radius: var(--radius);
+  padding: clamp(18px, 3vw, 32px);
+}
+.admin-main ::placeholder { color: #8b96a2; }
+.admin-main .admin-form :focus-visible,
+.admin-main .block :focus-visible { outline-color: var(--c-light); border-color: var(--c-light); }
+.admin-main .admin-check input { accent-color: var(--c-light); }
+
+/* Two rules from the dark-theme clarity pass named a light colour outright
+   instead of a token; on white they vanished. */
+.admin-main .admin-tile .label { color: var(--c-mute); }
+.admin-main .block-tools button:not(:disabled) { color: var(--c-mute); border-color: var(--c-line-soft); }
+.admin-main .block-tools button:disabled { color: var(--c-mute-2); opacity: 0.35; }
+
+/* Gold as text on white */
+.admin-main .admin-tile .value,
+.admin-main .block-kind,
+.admin-main .order-contact a,
+.admin-main .image-slot:first-child .image-slot-label,
+.admin-main .admin-ghost:hover,
+.admin-main .admin-nav a:hover,
+.admin-main .btn-secondary:hover,
+.admin-main .block-format button:hover,
+.admin-main .block-tools button:hover:not(:disabled) { color: var(--c-gold-text); }
+.admin-main .admin-ghost:hover,
+.admin-main .btn-secondary:hover,
+.admin-main .admin-tile:hover { border-color: var(--c-gold-text); }
+.admin-main .block-warn { color: #8a5a00; }
+
+/* Buttons */
+.admin-main .btn-secondary { background: #fff; color: var(--c-light); border-color: var(--c-line); }
+.admin-main .admin-danger { color: #b42323; }
+.admin-main .admin-danger:hover { color: #8f1b1b; }
+
+/* Surfaces that were tinted "a little lighter than navy" */
+.admin-main .block { background: #fff; }
+.admin-main .block:focus-within { border-color: var(--c-light); }
+.admin-main .image-slot,
+.admin-main .block-preview { background: #fff; }
+.admin-main .order-note { background: #eef1f4; }
+.admin-main .admin-actions { background: linear-gradient(to top, #f5f6f8 65%, transparent); }
+.admin-main .admin-side { display: none; } /* never inside main, guard only */
+
+/* Status colours, re-tinted for white */
+.admin-main .admin-alert { color: #9b2c2c; background: #fdecec; border-color: #f0b4b4; }
+.admin-main .admin-done { color: #1f6b3a; background: #e8f5ec; border-color: #b6dcc3; }
+.admin-main .admin-saved { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.16); border-color: rgba(212, 175, 55, 0.5); }
+.admin-main .order-pill.status-requested { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.2); }
+.admin-main .order-pill.status-confirmed { color: #1f6b3a; background: #e8f5ec; }
+.admin-main .admin-pill.on { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.2); }
+.admin-main .admin-card.unread { border-color: #b4931f; }
+
+/* The article preview inside the block editor */
+.admin-main .article-body a:not(.btn) { color: var(--c-gold-text); border-bottom-color: rgba(122, 95, 20, 0.4); }
+.admin-main .article-body code { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.14); border-color: rgba(212, 175, 55, 0.4); }
+.admin-main .article-body pre { background: #eef1f4; border-color: var(--c-line-soft); }
+.admin-main .gallery-thumb.active { border-color: var(--c-gold-text); }
+
+@media (max-width: 900px) {
+  .admin-main { padding: 16px; }
+}
