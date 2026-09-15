@@ -29,6 +29,7 @@ export type NavChild = { href: string; label: string; sub: string };
 export type NavItem = { href: string; label: string; children?: NavChild[] };
 
 export const nav: NavItem[] = [
+  { href: "/shop", label: "Shop" },
   {
     href: "/astrology",
     label: "Astrology",
@@ -84,7 +85,6 @@ export const nav: NavItem[] = [
   { href: "/feng-shui", label: "Feng Shui" },
   { href: "/tariffs", label: "Tariffs" },
   { href: "/courses", label: "Courses" },
-  { href: "/shop", label: "Shop" },
   { href: "/blog", label: "Blog" },
 ];
 
