@@ -1,8 +1,11 @@
 import { Btn, PageHeader, Section } from "@/components/Layout";
+import { SiteChrome } from "@/components/SiteChrome";
 
 export default function NotFound() {
+  // Unmatched URLs render under the root layout, which has no site frame of
+  // its own, so this page brings it along.
   return (
-    <>
+    <SiteChrome>
       <PageHeader
         trail={[{ label: "Not found" }]}
         eyebrow="404"
@@ -26,6 +29,6 @@ export default function NotFound() {
           </div>
         </div>
       </Section>
-    </>
+    </SiteChrome>
   );
 }

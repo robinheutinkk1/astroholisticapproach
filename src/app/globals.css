@@ -1128,6 +1128,19 @@ footer {
   flex-wrap: wrap; gap: 16px; font-size: 0.82rem; color: var(--c-mute-2);
 }
 .footer-bottom a:hover { color: var(--c-gold); }
+.footer-legal { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* The way into the admin. Dimmer than the legal links beside it, and it only
+   takes its full colour when you are actually on it. */
+.footer-signin {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-left: 6px; padding: 4px 10px;
+  border: 1px solid var(--c-line-soft); border-radius: 999px;
+  font-size: 0.76rem; color: rgba(245, 245, 245, 0.42);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.footer-signin svg { opacity: 0.75; }
+.footer-signin:hover,
+.footer-signin:focus-visible { color: var(--c-gold); border-color: var(--c-gold-dim); }
 .socials { display: flex; gap: 10px; margin-top: 8px; }
 .socials a {
   width: 36px; height: 36px; border-radius: 50%;
@@ -1903,4 +1916,252 @@ footer {
   .admin-shell .admin-form input[type="tel"],
   .admin-shell .admin-form select,
   .admin-shell .block input[type="text"] { min-height: 46px; }
+}
+
+/* ---- Admin: white working surface ----
+   The frame (top bar, sidebar) keeps the site's navy and gold. Everything in
+   .admin-main, where the editing happens, sits on a light sheet with dark
+   text. Done through the same colour tokens the admin components already
+   use, re-declared on .admin-main, so cards, fields, pills and the block
+   editor all follow; the handful of literal dark colours are overridden
+   below. Gold stays for fills (buttons, the active item) where navy text sits
+   on it; as *text* on white it is too pale, so a darker gold takes over. */
+.admin-main {
+  --c-light: #0f1d2b;        /* text: 15:1 on white */
+  --c-mute: #3a4756;         /* secondary text: 9:1 */
+  --c-mute-2: #5f6b78;       /* hints: 5.6:1 */
+  --c-night: #ffffff;        /* surfaces that used the page colour */
+  --c-night-soft: #ffffff;   /* cards */
+  --c-line: #78838f;         /* borders: 3.3:1 on white, 3.0 on the pane */
+  --c-line-soft: #d7dde4;
+  --c-gold-soft: #7a5f14;    /* gold as text: 6:1 on white */
+  --c-gold-dim: #b4931f;
+  --c-field: #ffffff;
+  --c-gold-text: #7a5f14;
+  background: #f5f6f8;
+  color: var(--c-light);
+  border: 1px solid #d7dde4;
+  border-radius: var(--radius);
+  padding: clamp(18px, 3vw, 32px);
+}
+.admin-main ::placeholder { color: #8b96a2; }
+.admin-main .admin-form :focus-visible,
+.admin-main .block :focus-visible { outline-color: var(--c-light); border-color: var(--c-light); }
+.admin-main .admin-check input { accent-color: var(--c-light); }
+
+/* Two rules from the dark-theme clarity pass named a light colour outright
+   instead of a token; on white they vanished. */
+.admin-main .admin-tile .label { color: var(--c-mute); }
+.admin-main .block-tools button:not(:disabled) { color: var(--c-mute); border-color: var(--c-line-soft); }
+.admin-main .block-tools button:disabled { color: var(--c-mute-2); opacity: 0.35; }
+
+/* Gold as text on white */
+.admin-main .admin-tile .value,
+.admin-main .block-kind,
+.admin-main .order-contact a,
+.admin-main .image-slot:first-child .image-slot-label,
+.admin-main .admin-ghost:hover,
+.admin-main .admin-nav a:hover,
+.admin-main .btn-secondary:hover,
+.admin-main .block-format button:hover,
+.admin-main .block-tools button:hover:not(:disabled) { color: var(--c-gold-text); }
+.admin-main .admin-ghost:hover,
+.admin-main .btn-secondary:hover,
+.admin-main .admin-tile:hover { border-color: var(--c-gold-text); }
+.admin-main .block-warn { color: #8a5a00; }
+
+/* Buttons */
+.admin-main .btn-secondary { background: #fff; color: var(--c-light); border-color: var(--c-line); }
+.admin-main .admin-danger { color: #b42323; }
+.admin-main .admin-danger:hover { color: #8f1b1b; }
+
+/* Surfaces that were tinted "a little lighter than navy" */
+.admin-main .block { background: #fff; }
+.admin-main .block:focus-within { border-color: var(--c-light); }
+.admin-main .image-slot,
+.admin-main .block-preview { background: #fff; }
+.admin-main .order-note { background: #eef1f4; }
+.admin-main .admin-actions { background: linear-gradient(to top, #f5f6f8 65%, transparent); }
+.admin-main .admin-side { display: none; } /* never inside main, guard only */
+
+/* Status colours, re-tinted for white */
+.admin-main .admin-alert { color: #9b2c2c; background: #fdecec; border-color: #f0b4b4; }
+.admin-main .admin-done { color: #1f6b3a; background: #e8f5ec; border-color: #b6dcc3; }
+.admin-main .admin-saved { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.16); border-color: rgba(212, 175, 55, 0.5); }
+.admin-main .order-pill.status-requested { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.2); }
+.admin-main .order-pill.status-confirmed { color: #1f6b3a; background: #e8f5ec; }
+.admin-main .admin-pill.on { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.2); }
+.admin-main .admin-card.unread { border-color: #b4931f; }
+
+/* The article preview inside the block editor */
+.admin-main .article-body a:not(.btn) { color: var(--c-gold-text); border-bottom-color: rgba(122, 95, 20, 0.4); }
+.admin-main .article-body code { color: var(--c-gold-text); background: rgba(212, 175, 55, 0.14); border-color: rgba(212, 175, 55, 0.4); }
+.admin-main .article-body pre { background: #eef1f4; border-color: var(--c-line-soft); }
+.admin-main .gallery-thumb.active { border-color: var(--c-gold-text); }
+
+@media (max-width: 900px) {
+  .admin-main { padding: 16px; }
+}
+
+/* ---- Admin: dashboard frame ----
+   The admin no longer sits inside the public site's menu bar and footer. It
+   is its own screen: a sidebar in the site's navy over the full height on
+   the left, and a white working area edge to edge on the right. These rules
+   replace the earlier .admin-shell / .admin-layout / .admin-bar layout; the
+   component styles (.admin-card, .admin-form, the block editor, the white
+   surface tokens on .admin-main) carry over unchanged. */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100vh; min-height: 100dvh;
+  max-width: none; padding: 0; margin: 0;
+}
+.admin-shell .admin-side {
+  position: sticky; top: 0; align-self: stretch;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  padding: 0; border: 0; border-radius: 0; border-right: 1px solid rgba(245, 245, 245, 0.1);
+  background: linear-gradient(180deg, #14102a 0%, var(--c-night) 55%);
+}
+.admin-side-brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; border-bottom: 1px solid rgba(245, 245, 245, 0.1);
+  font-family: var(--font-serif); font-size: 0.98rem; color: var(--c-light); line-height: 1.15;
+  white-space: nowrap;
+}
+.admin-side-brand .logo-mark { width: 30px; height: 30px; flex-shrink: 0; }
+.admin-side-brand em { font-style: italic; color: var(--c-gold); }
+.admin-side-brand-text { display: flex; flex-direction: column; }
+.admin-side-brand-text small {
+  font-family: var(--font-sans); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-mute-2); margin-top: 3px;
+}
+.admin-side-scroll { flex: 1; overflow-y: auto; padding: 10px 12px; }
+.admin-shell .admin-side-group { margin-top: 10px; }
+.admin-shell .admin-side-label { padding-left: 14px; margin-bottom: 4px; }
+.admin-shell .admin-side-link {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 7px 14px; border: 0; border-radius: var(--radius-sm);
+  background: none; font: inherit; font-size: 0.88rem; text-align: left; cursor: pointer;
+  color: rgba(245, 245, 245, 0.85);
+}
+.admin-shell .admin-side-link svg { flex-shrink: 0; opacity: 0.8; }
+.admin-shell .admin-side-link span:not(.admin-side-count) { flex: 1; min-width: 0; }
+.admin-shell .admin-side-link.active svg { opacity: 1; }
+.admin-side-count {
+  min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--c-gold); color: #0B1C2C; font-size: 0.72rem; font-weight: 700;
+}
+.admin-shell .admin-side-link.active .admin-side-count { background: #0B1C2C; color: var(--c-gold); }
+.admin-side-foot { padding: 8px 12px 10px; border-top: 1px solid rgba(245, 245, 245, 0.1); }
+.admin-side-user { padding: 4px 14px 8px; display: flex; flex-direction: column; gap: 2px; }
+.admin-side-user strong { font-size: 0.84rem; color: var(--c-light); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-side-user span { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-mute-2); }
+.admin-side-foot form { margin: 0; }
+
+.admin-shell .admin-main {
+  border: 0; border-radius: 0;
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 4vw, 56px) 80px;
+  background: #ffffff;
+}
+/* Page titles read as titles, with the description under them. */
+.admin-shell .admin-main > h2,
+.admin-shell .admin-main .admin-head h2 { font-size: 2rem; margin-bottom: 4px; }
+.admin-shell .admin-main > h2::after,
+.admin-shell .admin-main .admin-head h2::after { margin-top: 12px; margin-bottom: 18px; }
+/* Overview tiles: a label as a small heading, the number underneath at a
+   size that means something, and no more padding than the number needs. */
+.admin-shell .admin-main .admin-grid {
+  margin-top: 10px; gap: 12px;
+  /* Six tiles, three per row: two even rows instead of five and an orphan. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-shell .admin-main .admin-tile {
+  background: #f5f6f8; padding: 16px 20px 18px; border-radius: 12px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 104px;
+}
+.admin-shell .admin-main .admin-tile .label {
+  font-size: 0.86rem; font-weight: 500; color: var(--c-mute); line-height: 1.3; text-transform: none; letter-spacing: 0;
+}
+.admin-shell .admin-main .admin-tile .value {
+  font-size: 2.4rem; line-height: 1; margin: auto 0 0; font-weight: 500;
+  color: var(--c-light); font-variant-numeric: tabular-nums;
+}
+.admin-shell .admin-main .admin-tile .value.is-open { color: var(--c-gold-text); }
+.admin-shell .admin-main .admin-tile .note {
+  font-size: 0.78rem; color: var(--c-mute-2); line-height: 1.3;
+}
+@media (max-width: 700px) {
+  .admin-shell .admin-main .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .admin-shell .admin-main .admin-tile { padding: 14px 16px 16px; min-height: 96px; }
+  .admin-shell .admin-main .admin-tile .label { font-size: 0.8rem; }
+  .admin-shell .admin-main .admin-tile .value { font-size: 2rem; }
+  .admin-shell .admin-main .admin-tile .note { font-size: 0.74rem; }
+}
+
+/* ---- Overview: the sentence under a title, the activity list, the footnote ---- */
+.admin-lede { color: var(--c-mute-2); font-size: 0.9rem; margin: 0 0 22px; max-width: 60ch; }
+.admin-section-head {
+  font-size: 1.1rem; font-weight: 600; color: var(--c-light);
+  margin: 38px 0 12px;
+}
+.admin-quick { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
+
+/* One line per thing that came in: who, what, when. The dot is the only
+   marker needed for "this one still wants an answer". */
+.admin-feed { list-style: none; margin: 0; padding: 0; border: 1px solid var(--c-line-soft); border-radius: 12px; overflow: hidden; }
+.admin-feed li + li { border-top: 1px solid var(--c-line-soft); }
+.admin-feed a {
+  /* Every cell is placed by hand. Left to auto-placement, the two spanning
+     cells open a third row and the date drifts to the bottom. */
+  display: grid; gap: 2px 14px;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  padding: 11px 18px; color: inherit;
+}
+.admin-feed a:hover { background: #f5f6f8; }
+.admin-feed-dot {
+  width: 8px; height: 8px; border-radius: 999px; background: var(--c-line);
+  grid-column: 1; grid-row: 1 / span 2; align-self: center;
+}
+.admin-feed-dot.waiting { background: var(--c-gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22); }
+.admin-feed-who { grid-column: 2; grid-row: 1; font-weight: 600; font-size: 0.92rem; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-feed-what { grid-column: 2; grid-row: 2; font-size: 0.82rem; line-height: 1.4; color: var(--c-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-feed-when { grid-column: 3; grid-row: 1 / span 2; align-self: center; font-size: 0.8rem; color: var(--c-mute-2); white-space: nowrap; }
+
+.admin-footnote { margin-top: 30px; font-size: 0.82rem; color: var(--c-mute-2); }
+.admin-footnote a { color: var(--c-mute); border-bottom: 1px solid var(--c-line-soft); }
+.admin-footnote a:hover { color: var(--c-gold-text); border-bottom-color: currentColor; }
+
+@media (max-width: 560px) {
+  .admin-feed a { padding: 11px 14px; grid-template-columns: 10px minmax(0, 1fr); grid-template-rows: auto auto auto; }
+  .admin-feed-when { grid-column: 2; grid-row: 3; align-self: start; }
+}
+
+/* Narrow screens: the sidebar becomes a strip across the top, the menu a
+   horizontal row you can swipe, the account footer a single line. */
+@media (max-width: 900px) {
+  /* minmax(0, …) and min-width: 0: a grid track and a flex item both default
+     to "at least as wide as my content", which is exactly what a row that
+     must scroll instead must not do. */
+  .admin-shell { grid-template-columns: minmax(0, 1fr); }
+  .admin-shell .admin-side {
+    position: static; height: auto; min-width: 0; flex-direction: column; flex-wrap: nowrap; gap: 0;
+    padding: 0; border-right: 0; border-bottom: 1px solid rgba(245, 245, 245, 0.1);
+  }
+  .admin-side-scroll { min-width: 0; width: 100%; }
+  .admin-side-brand { padding: 14px 16px; }
+  .admin-side-scroll { display: flex; gap: 6px; padding: 10px 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .admin-side-scroll::-webkit-scrollbar { display: none; }
+  .admin-shell .admin-side-group { display: contents; }
+  .admin-shell .admin-side-label { display: none; }
+  .admin-shell .admin-side-link { width: auto; white-space: nowrap; padding: 9px 12px; border: 1px solid rgba(245, 245, 245, 0.16); }
+  .admin-shell .admin-side-link.active { border-color: var(--c-gold); }
+  .admin-side-foot { display: flex; align-items: center; gap: 4px; padding: 8px 12px; }
+  .admin-side-user { flex: 1; min-width: 0; padding: 0 6px; }
+  .admin-side-user span { display: none; }
+  .admin-side-foot .admin-side-link span { display: none; }
+  .admin-side-foot .admin-side-link { padding: 10px; border: 0; }
+  .admin-shell .admin-main { padding: 20px 16px 60px; }
 }

@@ -24,7 +24,7 @@ export default async function AdminOrdersPage() {
 
   return (
     <div>
-      <h2 style={{ fontSize: "1.5rem" }}>Reservations &amp; orders</h2>
+      <h2>Reservations &amp; orders</h2>
       <p style={{ color: "var(--c-mute-2)", fontSize: "0.86rem", margin: "8px 0 0" }}>
         {open === 0 ? "Nothing waiting for you." : open === 1 ? "One reservation waiting for a reply." : `${open} reservations waiting for a reply.`}{" "}
         Set a reservation to <strong style={{ color: "var(--c-light)" }}>Confirmed</strong> once you have said yes (that holds the pieces), and to <strong style={{ color: "var(--c-light)" }}>Cancelled</strong> to release them again.

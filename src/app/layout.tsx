@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import "./globals.css";
-import { CartProvider } from "@/components/CartProvider";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { site } from "@/lib/site";
 import { getSettings } from "@/lib/settings";
 import { Analytics } from "@vercel/analytics/next";
@@ -33,19 +29,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: site.name,
-  founder: { "@type": "Person", name: site.owner },
-  description: site.description,
-  url: env.siteUrl,
-  email: site.email,
-  address: { "@type": "PostalAddress", addressLocality: "Amsterdam", addressCountry: "NL" },
-  areaServed: "Worldwide",
-  priceRange: "€€",
-};
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -58,20 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Link className="skip-link" href="#app">
-          Skip to content
-        </Link>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-        <CartProvider>
-          <SiteHeader />
-          <main id="app" tabIndex={-1}>
-            {children}
-          </main>
-          <SiteFooter />
-        </CartProvider>
+        {/* The public site's menu bar and footer live in (site)/layout; the
+            admin has its own frame. */}
+        {children}
         {/* Page views only, no cookies and no cross-site tracking, so this
             needs no consent banner. */}
         <Analytics />

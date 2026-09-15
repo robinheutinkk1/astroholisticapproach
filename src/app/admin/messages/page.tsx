@@ -23,7 +23,7 @@ export default async function AdminMessagesPage() {
 
   return (
     <div>
-      <h2 style={{ fontSize: "1.5rem" }}>Messages</h2>
+      <h2>Messages</h2>
 
       <div style={{ display: "grid", gap: 16, marginTop: 28 }}>
         {messages.map((message) => (
