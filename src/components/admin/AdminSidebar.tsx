@@ -66,9 +66,13 @@ export function AdminSidebar({ email, counts }: { email: string; counts: Counts 
     <nav className="admin-side" aria-label="Admin sections">
       <Link href="/admin" className="admin-side-brand">
         <span className="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <circle cx="12" cy="12" r="8" />
-            <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+          {/* The same mark as the site header, gold and with explicit width and
+              height: an inline SVG with only a viewBox collapses inside a flex
+              box in some browsers. */}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="#D4AF37" strokeWidth="1" />
+            <circle cx="12" cy="12" r="4" fill="#D4AF37" />
+            <circle cx="12" cy="3" r="1.2" fill="#D4AF37" />
           </svg>
         </span>
         <span className="admin-side-brand-text">
