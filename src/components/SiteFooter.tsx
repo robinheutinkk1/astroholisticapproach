@@ -94,15 +94,23 @@ export async function SiteFooter() {
         </div>
 
         <div className="footer-biz">
-          <span>
-            <strong>KvK</strong> {settings.business.kvk}
-          </span>
-          <span>
-            <strong>IBAN</strong> {settings.business.iban}
-          </span>
-          <span>
-            <strong>E-mail</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
-          </span>
+          {/* Each label belongs to its value. Clearing a field in the admin used
+              to leave the word behind, so an emptied IBAN still read "IBAN". */}
+          {settings.business.kvk && (
+            <span>
+              <strong>KvK</strong> {settings.business.kvk}
+            </span>
+          )}
+          {settings.business.iban && (
+            <span>
+              <strong>IBAN</strong> {settings.business.iban}
+            </span>
+          )}
+          {settings.contact.email && (
+            <span>
+              <strong>E-mail</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
+            </span>
+          )}
         </div>
 
         <div className="footer-bottom">
