@@ -337,30 +337,69 @@ function revalidateEverything() {
   revalidatePath("/", "layout");
 }
 
+/** What a section is called on screen, so an error points at the right box. */
+const SECTION_LABELS: Record<SettingsKey, string> = {
+  brand: "How the site describes itself",
+  contact: "Contact",
+  business: "Business details",
+  socials: "Social media",
+  seo: "Share image",
+  tariffs: "Tariffs",
+  faq: "Questions and answers",
+  sessions: "Group sessions",
+};
+
+/** Field labels, where the name in the form differs from the name in the data. */
+const FIELD_LABELS: Record<string, string> = {
+  tagline: "Footer text",
+  description: "Search engine description",
+  email: "E-mail address",
+  kvk: "Chamber of Commerce number",
+  shareImage: "Image",
+  q: "Question",
+  a: "Answer",
+  ctaLabel: "Button text",
+  ctaUrl: "Button link",
+};
+
+/** Turns a validation issue into something that names the box on the page. */
+function issueMessage(key: SettingsKey, issue: z.core.$ZodIssue | undefined): string {
+  const path = (issue?.path ?? []).map((segment) =>
+    typeof segment === "number" ? `#${segment + 1}` : FIELD_LABELS[String(segment)] ?? String(segment),
+  );
+  const where = [SECTION_LABELS[key], ...path].join(" › ");
+  return `${where}: ${issue?.message ?? "please check this field"}. Nothing has been saved.`;
+}
+
 /**
- * Writes one section after validating it against that section's schema, so a
- * malformed value is refused here instead of reaching a page.
+ * Writes settings sections, all of them or none. The site form covers five
+ * sections at once, so validating each one just before its own write used to
+ * save the sections before the bad one and silently drop the ones after it.
+ * Everything is checked first, and only then written.
  */
-export async function saveSettingsSection(
-  key: SettingsKey,
-  value: unknown,
+export async function saveSettingsSections(
+  sections: { key: SettingsKey; value: unknown }[],
 ): Promise<SaveState> {
   await requireAdmin();
 
-  const schema = schemas[key];
-  if (!schema) return { status: "error", message: "Unknown settings section." };
+  if (!Array.isArray(sections) || sections.length === 0) {
+    return { status: "error", message: "Nothing to save." };
+  }
 
-  const parsed = schema.safeParse(value);
-  if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    const where = issue?.path.length ? `${issue.path.join(" › ")}: ` : "";
-    return { status: "error", message: `${where}${issue?.message ?? "Please check the form."}` };
+  const rows: { key: SettingsKey; value: unknown }[] = [];
+  for (const section of sections) {
+    const schema = schemas[section.key];
+    if (!schema) return { status: "error", message: "Unknown settings section." };
+
+    const parsed = schema.safeParse(section.value);
+    if (!parsed.success) {
+      return { status: "error", message: issueMessage(section.key, parsed.error.issues[0]) };
+    }
+    rows.push({ key: section.key, value: parsed.data });
   }
 
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase
-    .from("site_settings")
-    .upsert({ key, value: parsed.data }, { onConflict: "key" });
+  const { error } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
 
   if (error) {
     console.error("[settings] save failed", error.message);
