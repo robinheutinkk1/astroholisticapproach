@@ -23,8 +23,23 @@ const socialIcons: Record<string, React.ReactNode> = {
     </svg>
   ),
   facebook: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M14 8h2V5h-2a3 3 0 00-3 3v2H9v3h2v6h3v-6h2.2l.8-3H14v-2a1 1 0 011-1z" />
+    // The old path was Facebook's solid f drawn as an outline, which left a
+    // notch where the crossbar meets the stem. This is an f in the rounded
+    // square Facebook itself uses, matching the line weight and the container
+    // shape of the three icons beside it.
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <path d="M15.4 8.2h-1.3a1.8 1.8 0 0 0-1.8 1.8v1.9h3l-.45 2.6h-2.55V20" />
     </svg>
   ),
 };
@@ -94,15 +109,23 @@ export async function SiteFooter() {
         </div>
 
         <div className="footer-biz">
-          <span>
-            <strong>KvK</strong> {settings.business.kvk}
-          </span>
-          <span>
-            <strong>IBAN</strong> {settings.business.iban}
-          </span>
-          <span>
-            <strong>E-mail</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
-          </span>
+          {/* Each label belongs to its value. Clearing a field in the admin used
+              to leave the word behind, so an emptied IBAN still read "IBAN". */}
+          {settings.business.kvk && (
+            <span>
+              <strong>KvK</strong> {settings.business.kvk}
+            </span>
+          )}
+          {settings.business.iban && (
+            <span>
+              <strong>IBAN</strong> {settings.business.iban}
+            </span>
+          )}
+          {settings.contact.email && (
+            <span>
+              <strong>E-mail</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
+            </span>
+          )}
         </div>
 
         <div className="footer-bottom">
