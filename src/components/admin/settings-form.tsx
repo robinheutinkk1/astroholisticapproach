@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { saveSettingsSection, resetSettingsSections } from "@/app/admin/actions";
+import { saveSettingsSections, resetSettingsSections } from "@/app/admin/actions";
 import type { SettingsKey } from "@/lib/settings";
 
 /**
- * Shared save handling for the settings forms: one call per section, the
- * server's validation message shown as-is, and a reset that puts the section
- * back to the values the site shipped with.
+ * Shared save handling for the settings forms: every section in one call so a
+ * rejected field cannot leave half the form saved, the server's validation
+ * message shown as-is, and a reset that puts the section back to the values
+ * the site shipped with.
  */
 export function useSectionSave() {
   const [pending, startTransition] = useTransition();
@@ -16,14 +17,12 @@ export function useSectionSave() {
   function save(sections: { key: SettingsKey; value: unknown }[]) {
     setMessage(null);
     startTransition(async () => {
-      for (const section of sections) {
-        const result = await saveSettingsSection(section.key, section.value);
-        if (result.status === "error") {
-          setMessage({ ok: false, text: result.message ?? "Saving failed." });
-          return;
-        }
-      }
-      setMessage({ ok: true, text: "Saved. The site is updated." });
+      const result = await saveSettingsSections(sections);
+      setMessage(
+        result.status === "error"
+          ? { ok: false, text: result.message ?? "Saving failed." }
+          : { ok: true, text: "Saved. The site is updated." },
+      );
     });
   }
 
